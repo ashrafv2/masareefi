@@ -211,7 +211,7 @@ html[data-theme="dark"] #savingAccountsCards .card {background:#2c233c !importan
     <p>هذا مجموع حسابي للعرض، وليس صافي ثروتك أو رصيدًا متاحًا للسحب. قد يشمل مبالغ متداخلة إذا أودعت جزءًا من الدخل في الادخار، والمستحقات لم تُحصّل بعد. لا تدخل ديونك المستحقة عليك في هذا الجمع.</p>
   </div>
 </details>
-<div class="quick-actions"><button class="quick-action" onclick="navigate('add')"><span class="quick-icon">＋</span><span>معاملة جديدة<small>دخل أو مصروف</small></span></button><button class="quick-action" onclick="navigate('savings')"><span class="quick-icon">◈</span><span>حساب الادخار<small>إيداع وسحب</small></span></button><button class="quick-action" onclick="navigate('receivables')"><span class="quick-icon">↙</span><span>مبالغ مستحقة لي<small>تحصيل ومتابعة</small></span></button><button class="quick-action" onclick="navigate('budget')"><span class="quick-icon">▦</span><span>الميزانية<small>حدود الإنفاق</small></span></button></div>
+<div class="quick-actions" aria-label="الإجراءات السريعة"><button class="quick-action quick-income" onclick="openFinanceEntry('income')"><span class="quick-icon">↓</span><span>إضافة دخل</span></button><button class="quick-action quick-expense" onclick="openFinanceEntry('expense')"><span class="quick-icon">↑</span><span>إضافة مصروف</span></button><button class="quick-action" onclick="navigate('savings')"><span class="quick-icon">◈</span><span>الادخار</span></button><button class="quick-action" onclick="navigate('receivables')"><span class="quick-icon">↙</span><span>مستحقاتي</span></button></div><div class="mobile-secondary-shortcuts"><button type="button" onclick="navigate('budget')">▦ الميزانية</button><button type="button" onclick="navigate('goals')">◎ الأهداف</button><button type="button" onclick="navigate('debts')">▤ الأقساط</button></div>
     <div class="grid stats">
       <div class="card"><div class="stat-head"><span>إجمالي الدخل</span><span class="stat-icon">↙</span></div><div class="stat-value" id="incomeStat">0 ر.س</div><div class="stat-foot">الدخل المسجل لهذا الشهر</div></div>
       <div class="card"><div class="stat-head"><span>إجمالي المصروفات</span><span class="stat-icon">↗</span></div><div class="stat-value" id="expenseStat">0 ر.س</div><div class="stat-foot">المصروفات المسجلة لهذا الشهر</div></div>
@@ -264,8 +264,8 @@ html[data-theme="dark"] #savingAccountsCards .card {background:#2c233c !importan
   </section>
   <section class="page" id="page-savings">
     <div class="grid stats"><div class="card"><div class="stat-head">رصيد حساب الادخار</div><div class="stat-value" id="savingsBalance">0 ر.س</div><div class="small">مستقل عن الدخل والمصروفات</div></div><div class="card"><div class="stat-head">المبالغ المحصلة من الآخرين</div><div class="stat-value" id="collectedSavings">0 ر.س</div></div></div>
-    <div class="card" style="margin-bottom:18px"><div class="section-title"><h2>حسابات الادخار الخاصة بي</h2><span>أضف حسابات بنكية أو نقدية بأسماء تختارها</span></div><div class="grid stats" id="savingAccountsCards"></div><div class="form-grid" style="margin-top:18px"><div class="field"><label>اسم الحساب الجديد</label><input id="newAccountName" maxlength="60" placeholder="مثال: بنك الراجحي، محفظة المنزل"></div><div class="field"><label>نوع الحساب</label><select id="newAccountType"><option value="bank">بنكي</option><option value="cash">نقدي</option></select></div></div><div class="form-actions"><button class="btn" onclick="addSavingAccount()">＋ إضافة حساب ادخار</button></div></div>
-    <div class="card form-card"><div class="section-title"><h2>إضافة حركة إلى حساب الادخار</h2></div><form id="savingForm"><div class="form-grid"><div class="field"><label>نوع الحركة</label><select id="savingType"><option value="deposit">إيداع في الادخار</option><option value="withdrawal">سحب من الادخار</option><option value="transfer">تحويل بين حسابات الادخار</option></select></div><div class="field"><label>مكان الادخار</label><select id="savingAccount"></select></div><div class="field" id="targetAccountField" style="display:none"><label>الحساب المستلم</label><select id="savingTargetAccount"></select></div><div class="field"><label>المبلغ (ريال)</label><input id="savingAmount" type="number" min="0.01" step="0.01" required></div><div class="field"><label>التاريخ</label><input id="savingDate" type="date" required></div><div class="field"><label>ملاحظة</label><input id="savingNote" placeholder="مثال: مبلغ ادخار إضافي"></div></div><div class="form-actions"><button class="btn" type="submit">حفظ الحركة</button></div></form><div class="notice">يمكن إنشاء عدة حسابات بنكية ونقدية، والتحويل بينها دون تغيير إجمالي الادخار. حركات الادخار مستقلة عن الدخل والمصروفات. عند نقل مبلغ من الراتب إلى الادخار، يبقى حساب الراتب دون خصم تلقائي؛ ويمكن تطوير التحويل بين الحسابين لاحقًا.</div></div>
+    <div class="card" style="margin-bottom:18px"><div class="section-title"><h2>حسابات الادخار الخاصة بي</h2><span>أضف حسابات بنكية أو نقدية بأسماء تختارها</span></div><div class="grid stats" id="savingAccountsCards"></div><details class="savings-add-details"><summary>＋ إضافة حساب ادخار جديد</summary><div class="form-grid" style="margin-top:18px"><div class="field"><label>اسم الحساب الجديد</label><input id="newAccountName" maxlength="60" placeholder="مثال: بنك الراجحي، محفظة المنزل"></div><div class="field"><label>نوع الحساب</label><select id="newAccountType"><option value="bank">بنكي</option><option value="cash">نقدي</option></select></div></div><div class="form-actions"><button class="btn" onclick="addSavingAccount()">حفظ الحساب الجديد</button></div></details></div>
+    <div class="card form-card savings-movement"><details id="savingMovementDetails"><summary>＋ إيداع أو سحب أو تحويل بين حساباتي</summary><form id="savingForm"><div class="form-grid"><div class="field"><label>نوع الحركة</label><select id="savingType"><option value="deposit">إيداع في الادخار</option><option value="withdrawal">سحب من الادخار</option><option value="transfer">تحويل بين حسابات الادخار</option></select></div><div class="field"><label>مكان الادخار</label><select id="savingAccount"></select></div><div class="field" id="targetAccountField" style="display:none"><label>الحساب المستلم</label><select id="savingTargetAccount"></select></div><div class="field"><label>المبلغ (ريال)</label><input id="savingAmount" type="number" min="0.01" step="0.01" required></div><div class="field"><label>التاريخ</label><input id="savingDate" type="date" required></div><div class="field"><label>ملاحظة</label><input id="savingNote" placeholder="مثال: مبلغ ادخار إضافي"></div></div><div class="form-actions"><button class="btn" type="submit">حفظ الحركة</button></div></form><div class="notice">يمكن إنشاء عدة حسابات بنكية ونقدية، والتحويل بينها دون تغيير إجمالي الادخار. حركات الادخار مستقلة عن الدخل والمصروفات. عند نقل مبلغ من الراتب إلى الادخار، يبقى حساب الراتب دون خصم تلقائي؛ ويمكن تطوير التحويل بين الحسابين لاحقًا.</div></details></div>
     <div class="card" style="margin-top:18px"><div class="section-title"><h2>سجل حساب الادخار</h2></div><div id="savingsHistory"></div></div>
   </section>
   <section class="page" id="page-receivables">
@@ -341,7 +341,7 @@ function renderAllFunds(monthlyIncome){
   $('allFundsIncome').textContent=money(income);
   $('allFundsTotal').textContent=money(total);
 }
-function renderChart(){let arr=[];let now=new Date(currentMonth()+'-01T12:00:00');for(let i=5;i>=0;i--){let d=new Date(now.getFullYear(),now.getMonth()-i,1),m=d.toISOString().slice(0,7),ts=data.transactions.filter(t=>t.date?.slice(0,7)===m);arr.push({m,label:d.toLocaleDateString('ar-SA',{month:'short'}),inc:sum(ts,'income'),exp:sum(ts,'expense')})}let max=Math.max(1,...arr.flatMap(x=>[x.inc,x.exp]));$('chart').innerHTML=arr.map(x=>`<div class="bar-group"><div class="bars"><div class="bar" title="الدخل ${money(x.inc)}" style="height:${x.inc/max*100}%"></div><div class="bar expense" title="المصروفات ${money(x.exp)}" style="height:${x.exp/max*100}%"></div></div><div class="bar-label">${x.label}</div></div>`).join('')}
+function renderChart(){let arr=[];let now=new Date(currentMonth()+'-01T12:00:00');for(let i=5;i>=0;i--){let d=new Date(now.getFullYear(),now.getMonth()-i,1),m=d.toISOString().slice(0,7),ts=data.transactions.filter(t=>t.date?.slice(0,7)===m);arr.push({m,label:d.toLocaleDateString('ar-SA',{month:'short'}),inc:sum(ts,'income'),exp:sum(ts,'expense')})}let max=Math.max(1,...arr.flatMap(x=>[x.inc,x.exp]));$('chart').classList.toggle('chart-has-data',arr.some(x=>x.inc>0||x.exp>0));$('chart').innerHTML=arr.map(x=>`<div class="bar-group"><div class="bars"><div class="bar" title="الدخل ${money(x.inc)}" style="height:${x.inc/max*100}%"></div><div class="bar expense" title="المصروفات ${money(x.exp)}" style="height:${x.exp/max*100}%"></div></div><div class="bar-label">${x.label}</div></div>`).join('')}
 function goalMarkup(g){let pct=Math.min(100,Math.round(g.current/g.target*100));return `<div class="goal"><div class="goal-top"><span>${esc(g.name)}</span><span>${pct}%</span></div><div class="progress"><span style="width:${pct}%"></span></div><div class="goal-sub"><span>${money(g.current)} من ${money(g.target)}</span><span>${g.date?esc(g.date):'بدون موعد'}</span></div><div class="actions" style="margin-top:10px"><button class="btn light" style="padding:7px 10px;font-size:12px" onclick="addToGoal(${g.id})">＋ إضافة ادخار</button><button class="btn ghost" style="padding:7px 10px;font-size:12px" onclick="deleteGoal(${g.id})">حذف</button></div></div>`}
 function renderGoals(){$('homeGoals').innerHTML=data.goals.length?data.goals.slice(0,3).map(goalMarkup).join(''):'<div class="empty">لم تضف هدف ادخار بعد.</div>';$('goalsList').innerHTML=data.goals.length?data.goals.map(goalMarkup).join(''):'<div class="empty">أضف هدفك الأول وابدأ متابعة تقدمك.</div>'}
 function addToGoal(id){let g=data.goals.find(x=>x.id===id);if(!g)return;let n=Number(prompt('كم المبلغ الذي تريد إضافته إلى هدفك؟'));if(!n||n<=0)return;g.current=Math.min(g.target,g.current+n);save()}
@@ -359,8 +359,31 @@ function savingsTotal(){ensureSavingAccounts();return data.savingAccounts.reduce
 function accountName(id){ensureSavingAccounts();return data.savingAccounts.find(a=>a.id===id)?.name||id||'حساب بنكي'}
 function addSavingAccount(){let name=$('newAccountName').value.trim(),type=$('newAccountType').value;if(!name){alert('أدخل اسم الحساب');return}ensureSavingAccounts();if(data.savingAccounts.some(a=>a.name===name)){alert('هذا الاسم مستخدم بالفعل');return}data.savingAccounts.push({id:'acc_'+Date.now(),name,type});$('newAccountName').value='';save()}
 function renameSavingAccount(id){let a=data.savingAccounts.find(x=>x.id===id);if(!a)return;let name=prompt('اسم الحساب الجديد',a.name);if(name===null)return;name=name.trim();if(!name||data.savingAccounts.some(x=>x.id!==id&&x.name===name)){alert('اسم غير صالح أو مكرر');return}a.name=name;save()}
+function adjustSavingBalance(id){
+  ensureSavingAccounts();
+  const account=data.savingAccounts.find(a=>a.id===id);
+  if(!account)return;
+  const oldBalance=Math.round(savingsAccountTotal(id)*100)/100;
+  const answer=prompt('الرصيد الصحيح لحساب «'+account.name+'» بالريال:',String(oldBalance));
+  if(answer===null)return;
+  const cleaned=String(answer).trim().replace(/[٬,]/g,'').replace('٫','.');
+  if(!cleaned || !/^\d+(?:\.\d{1,2})?$/.test(cleaned)){alert('أدخل مبلغًا صحيحًا غير سالب، بخانتين عشريتين كحد أقصى.');return}
+  const updated=Number(cleaned);
+  if(!Number.isFinite(updated)||updated<0||updated>99999999999){alert('المبلغ غير صالح.');return}
+  const difference=Math.round((updated-oldBalance)*100)/100;
+  if(Math.abs(difference)<0.005){alert('الرصيد لم يتغير.');return}
+  if(!confirm('تأكيد تصحيح رصيد «'+account.name+'» من '+money(oldBalance)+' إلى '+money(updated)+'؟\nسيتم تسجيل الفرق في سجل الادخار فقط، ولن يتغير الدخل الشهري أو المصروفات.'))return;
+  data.savings.push({
+   id:'adjust_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),
+   type:difference>0?'deposit':'withdrawal',
+   account:id,amount:Math.abs(difference),date:today(),
+   note:'تسوية رصيد يدويّة (من '+oldBalance+' إلى '+updated+' ر.س)',
+   adjustment:true
+  });
+  save();
+}
 function removeSavingAccount(id){let a=data.savingAccounts.find(x=>x.id===id);if(!a)return;if(Math.abs(savingsAccountTotal(id))>.001||data.savings.some(x=>x.account===id||x.toAccount===id)){alert('لا يمكن حذف حساب يحتوي على رصيد أو حركات مسجلة. يمكنك تغيير اسمه.');return}if(data.savingAccounts.length<=1){alert('يجب الاحتفاظ بحساب واحد على الأقل');return}if(confirm('حذف الحساب الفارغ؟')){data.savingAccounts=data.savingAccounts.filter(x=>x.id!==id);save()}}
-function renderSavings(){ensureSavingAccounts();let rows=data.savings||[];$('savingsBalance').textContent=money(savingsTotal());$('collectedSavings').textContent=money(rows.filter(x=>x.type==='collection').reduce((s,x)=>s+Number(x.amount),0));$('savingAccountsCards').innerHTML=data.savingAccounts.map(a=>`<div class="card" style="background:#f8fbf6"><div class="stat-head"><span>${a.type==='bank'?'🏦':'💵'} ${esc(a.name)}</span></div><div class="stat-value">${money(savingsAccountTotal(a.id))}</div><div class="actions"><button class="btn ghost" style="padding:6px 9px" onclick="renameSavingAccount('${a.id}')">تعديل الاسم</button><button class="btn ghost" style="padding:6px 9px" onclick="removeSavingAccount('${a.id}')">حذف</button></div></div>`).join('');let selected=$('savingAccount').value,target=$('savingTargetAccount').value;let opts=data.savingAccounts.map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join('');$('savingAccount').innerHTML=opts;$('savingTargetAccount').innerHTML=opts;if(data.savingAccounts.some(a=>a.id===selected))$('savingAccount').value=selected;if(data.savingAccounts.some(a=>a.id===target))$('savingTargetAccount').value=target;updateTransferFields();$('savingsHistory').innerHTML=rows.length?`<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>النوع</th><th>التفاصيل</th><th>الحساب</th><th>المبلغ</th></tr></thead><tbody>${[...rows].reverse().map(x=>`<tr><td>${esc(x.date)}</td><td>${x.type==='collection'?'تحصيل دين':x.type==='transfer'?'تحويل':x.type==='withdrawal'?'سحب':'إيداع'}</td><td>${esc(x.note)}</td><td>${x.type==='transfer'?esc(accountName(x.account||'bank'))+' ← '+esc(accountName(x.toAccount)):esc(accountName(x.account||'bank'))}</td><td class="${x.type==='withdrawal'?'negative':'positive'}">${x.type==='withdrawal'?'−':x.type==='transfer'?'':'+'}${money(x.amount)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">لم تُسجّل أي حركة ادخار.</div>'}
+function renderSavings(){ensureSavingAccounts();let rows=data.savings||[];$('savingsBalance').textContent=money(savingsTotal());$('collectedSavings').textContent=money(rows.filter(x=>x.type==='collection').reduce((s,x)=>s+Number(x.amount),0));$('savingAccountsCards').innerHTML=data.savingAccounts.map(a=>`<div class="card saving-account-row"><span class="account-symbol" aria-hidden="true">${a.type==='bank'?'🏦':'💵'}</span><div class="account-details"><div class="account-name">${esc(a.name)}</div><div class="account-balance" dir="auto">${money(savingsAccountTotal(a.id))}</div></div><details class="account-menu"><summary aria-label="خيارات حساب ${esc(a.name)}">⋯</summary><div class="account-menu-pop"><button type="button" onclick="renameSavingAccount('${a.id}')">تعديل الاسم</button><button type="button" onclick="adjustSavingBalance('${a.id}')">تعديل الرصيد</button><button type="button" class="account-delete" onclick="removeSavingAccount('${a.id}')">حذف الحساب</button></div></details></div>`).join('');let selected=$('savingAccount').value,target=$('savingTargetAccount').value;let opts=data.savingAccounts.map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join('');$('savingAccount').innerHTML=opts;$('savingTargetAccount').innerHTML=opts;if(data.savingAccounts.some(a=>a.id===selected))$('savingAccount').value=selected;if(data.savingAccounts.some(a=>a.id===target))$('savingTargetAccount').value=target;updateTransferFields();$('savingsHistory').innerHTML=rows.length?`<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>النوع</th><th>التفاصيل</th><th>الحساب</th><th>المبلغ</th></tr></thead><tbody>${[...rows].reverse().map(x=>`<tr><td>${esc(x.date)}</td><td>${x.type==='collection'?'تحصيل دين':x.type==='transfer'?'تحويل':x.type==='withdrawal'?'سحب':'إيداع'}</td><td>${esc(x.note)}</td><td>${x.type==='transfer'?esc(accountName(x.account||'bank'))+' ← '+esc(accountName(x.toAccount)):esc(accountName(x.account||'bank'))}</td><td class="${x.type==='withdrawal'?'negative':'positive'}">${x.type==='withdrawal'?'−':x.type==='transfer'?'':'+'}${money(x.amount)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">لم تُسجّل أي حركة ادخار.</div>'}
 function updateTransferFields(){$('targetAccountField').style.display=$('savingType').value==='transfer'?'grid':'none'}
 $('savingType').addEventListener('change',updateTransferFields);
 function renderReceivables(){let rs=data.receivables||[],remaining=rs.reduce((s,r)=>s+Number(r.remaining),0),collected=rs.reduce((s,r)=>s+Number(r.amount)-Number(r.remaining),0);$('receivableBalance').textContent=money(remaining);$('receivableCollected').textContent=money(collected);$('receivablesList').innerHTML=rs.length?rs.map(r=>`<div class="debt-item"><div class="debt-top"><span>${esc(r.name)}</span><span>${money(r.remaining)} متبقي</span></div><div class="debt-meta"><span>الأصل ${money(r.amount)} · المحصل ${money(r.amount-r.remaining)}</span><span>تاريخ الدين: ${esc(r.debtDate||'غير مسجل')}</span></div><div class="small" style="margin-top:8px">${esc(r.note||'')}</div><div class="actions" style="margin-top:10px"><button class="btn light" onclick="collectReceivable('${r.id}')" ${r.remaining<=0?'disabled':''}>تحصيل مبلغ إلى الادخار</button><button class="btn ghost" onclick="deleteReceivable('${r.id}')">حذف</button></div></div>`).join(''):'<div class="empty">لا توجد مبالغ مستحقة لك مسجلة.</div>'}
@@ -779,4 +802,215 @@ async function shareCloudBackup(){
   exportJSON();
   alert('تم تنزيل ملف النسخة الاحتياطية. انقل الملف إلى Google Drive أو iCloud Drive يدويًا من تطبيق الملفات.');
 }
-</script></body></html>
+</script><style id="iphone-readability-fixes">
+@media(max-width:700px){
+ html{-webkit-text-size-adjust:100%}
+ main{padding-bottom:calc(132px + env(safe-area-inset-bottom))!important}
+ .bottom-nav{padding-bottom:max(13px,env(safe-area-inset-bottom))!important}
+ .topbar h1{font-size:24px!important}
+ .section-title h2{font-size:20px!important;line-height:1.5!important}
+ .section-title span,.small,.stat-foot,.stat-head,.goal-sub,.debt-meta,.field label,.notice{font-size:13px!important;line-height:1.65!important}
+ .stat-value{font-size:clamp(23px,5.5vw,30px)!important;line-height:1.4!important;overflow-wrap:anywhere}
+ .field input,.field select,.field textarea{font-size:16px!important;min-height:48px!important}
+ .btn,.actions button{font-size:14px!important;min-height:44px}
+ .bottom-nav button{font-size:12px!important}
+ #page-savings #savingAccountsCards{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}
+ #page-savings #savingAccountsCards>.card{padding:17px!important;border-radius:19px!important}
+ #page-savings #savingAccountsCards .stat-head{font-size:15px!important}
+ #page-savings #savingAccountsCards .stat-value{font-size:clamp(26px,7vw,34px)!important;color:inherit!important}
+ #page-savings #savingAccountsCards .actions{display:flex!important;flex-wrap:wrap!important;gap:8px!important}
+ #page-savings #savingAccountsCards .actions button{flex:1 1 auto!important;padding:10px!important;font-size:13px!important}
+ #page-home .stat-head{font-size:13px!important}
+ #page-home .stat-foot{font-size:12px!important}
+ #page-home .stat-value{font-size:clamp(21px,5.4vw,27px)!important}
+ #page-home .all-funds-copy b{font-size:14px!important}
+ #page-home .all-funds-copy small{font-size:12px!important}
+ #page-home .all-funds-amount{font-size:19px!important}
+ #page-home .savings-strip-label small{font-size:12px!important}
+}
+html[data-theme="dark"] #page-savings #savingAccountsCards .stat-value{color:#fff!important}
+</style><style id="mobile-first-final-2026">
+/* iPhone-first adjustments, design 4 retained in both themes. */
+.mobile-secondary-shortcuts{display:none}
+.savings-add-details summary,.savings-movement summary{cursor:pointer;list-style:none;font-weight:750;font-size:15px;color:var(--purple,#7142b9);padding:13px 8px;min-height:46px}
+.savings-add-details summary::-webkit-details-marker,.savings-movement summary::-webkit-details-marker,.account-menu summary::-webkit-details-marker{display:none}
+.saving-account-row{display:flex;align-items:center;gap:13px;min-width:0;position:relative}
+.account-symbol{width:48px;height:48px;border-radius:15px;flex:0 0 48px;display:grid;place-items:center;background:#a982e51e;font-size:23px}
+.account-details{flex:1;min-width:0}.account-name{font-weight:700;font-size:15px;overflow-wrap:anywhere}.account-balance{font-weight:800;font-size:23px;margin-top:4px;font-variant-numeric:tabular-nums}
+.account-menu{position:relative;flex:0 0 42px}.account-menu summary{list-style:none;border:1px solid var(--line,#ddd);background:transparent;border-radius:12px;width:42px;height:42px;display:grid;place-items:center;cursor:pointer;font-size:28px;line-height:1}
+.account-menu-pop{position:absolute;left:0;top:47px;z-index:8;background:#fff;color:#28203b;border:1px solid #ddd1e8;box-shadow:0 12px 30px #0c082633;border-radius:13px;min-width:145px;overflow:hidden;display:grid}
+.account-menu-pop button{background:transparent;color:inherit;text-align:right;border:0;border-bottom:1px solid #eee4f4;padding:12px 14px;font-size:13px;cursor:pointer}.account-menu-pop button:last-child{border-bottom:0}.account-menu-pop .account-delete{color:#c84e62}
+html[data-theme="dark"] .account-menu-pop{background:#32253f;color:white;border-color:#604b76}html[data-theme="dark"] .account-menu-pop button{border-color:#554369}
+html[data-theme="dark"] .account-name,html[data-theme="dark"] .account-balance{color:#fff!important}
+@media(max-width:700px){
+ html{-webkit-text-size-adjust:100%!important}
+ main{padding:14px 15px calc(142px + env(safe-area-inset-bottom))!important;min-width:0!important}
+ .topbar{display:grid!important;grid-template-columns:1fr auto;align-items:center!important;gap:10px!important;margin-bottom:12px!important}
+ .topbar>div:first-child{grid-column:1;grid-row:1;min-width:0}
+ .topbar #pageTitle{font-size:22px!important;line-height:1.35!important}
+ .topbar .actions{display:contents!important}
+ .topbar .theme-toggle{grid-column:2;grid-row:1;min-width:43px;width:43px;height:43px!important;padding:0!important;border-radius:14px!important}
+ .topbar .theme-toggle .theme-text{display:none!important}
+ .topbar #monthPick{grid-column:1/-1;grid-row:2;width:100%!important;min-height:44px!important;font-size:15px!important;text-align:center!important}
+ .topbar .actions>.btn{display:none!important}
+ #page-home .bank-head{height:200px!important;min-height:0!important;padding:17px!important;border-radius:22px!important;display:block!important;position:relative!important;overflow:hidden!important;margin-bottom:10px!important}
+ #page-home .bank-head-title{position:relative!important;z-index:4!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:4px!important;width:70%!important}
+ #page-home .bank-head-title strong{font-size:16px!important;line-height:1.35!important}
+ #page-home .bank-kicker{font-size:13px!important;line-height:1.4!important}
+ #page-home .bank-head-balance{position:absolute!important;z-index:5!important;right:auto!important;left:17px!important;bottom:19px!important;top:auto!important;width:auto!important;max-width:90%!important;text-align:right!important;align-items:flex-start!important;padding:10px 13px!important;border-radius:15px!important;background:rgba(23,13,46,.63)!important;backdrop-filter:blur(5px)!important;box-shadow:0 5px 20px #0b071133!important}
+ #page-home .bank-head-balance small,#page-home .bank-head-balance b{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 1px 2px #0008!important}
+ #page-home .bank-head-balance b{font-size:clamp(24px,7vw,32px)!important;line-height:1.3!important;white-space:nowrap!important}
+ #page-home .bank-orb{display:none!important}
+ #page-home .savings-strip{min-height:64px!important;margin:0 0 9px!important;padding:11px 12px!important}
+ #page-home .savings-strip-label{font-size:14px!important}
+ #page-home .savings-strip-label small{font-size:12px!important}
+ #page-home .savings-strip strong{font-size:clamp(17px,4.6vw,21px)!important;white-space:nowrap}
+ #page-home .all-funds-card{margin-bottom:12px!important}
+ #page-home .all-funds-summary{padding:12px!important;gap:10px!important;min-height:58px!important}
+ #page-home .all-funds-copy small{display:none!important}
+ #page-home .all-funds-copy b{font-size:14px!important}
+ #page-home .all-funds-amount{font-size:clamp(17px,4.5vw,20px)!important}
+ #page-home .quick-actions{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;margin:12px 0!important}
+ #page-home .quick-action{display:flex!important;flex-direction:column!important;align-items:center!important;gap:7px!important;min-width:0!important;padding:4px 1px!important;text-align:center!important;color:inherit!important;font-size:12px!important;min-height:80px!important}
+ #page-home .quick-icon{width:52px!important;height:52px!important;border-radius:17px!important;display:grid!important;place-items:center!important;font-size:25px!important}
+ #page-home .quick-income .quick-icon{background:#d7f6e7!important;color:#16865e!important}
+ #page-home .quick-expense .quick-icon{background:#ffe2da!important;color:#b93f45!important}
+ .mobile-secondary-shortcuts{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:13px}
+ .mobile-secondary-shortcuts button{background:transparent;border:1px solid #a994bc55;color:inherit;border-radius:11px;padding:10px 4px;font-size:12px;font-weight:600;min-height:40px}
+ #page-home .stats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+ #page-home .stats>.card:nth-child(n+3){display:none!important}
+ #page-home .stats>.card{min-width:0!important;padding:13px!important;min-height:105px!important}
+ #page-home .stats .stat-value{font-size:clamp(20px,5.2vw,26px)!important;overflow-wrap:anywhere!important;white-space:normal!important;color:inherit}
+ #page-home .stats .stat-head{font-size:13px!important;color:inherit!important;opacity:.89!important}
+ #page-home .stats .stat-foot{font-size:11.5px!important;color:inherit!important;opacity:.72!important}
+ #page-home .main-grid,#page-home .lower-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:12px!important}
+ #page-home .main-grid>.card,#page-home .lower-grid>.card{padding:16px!important;min-width:0!important}
+ #page-home .bar-chart{height:132px!important;min-height:132px!important}
+ #page-home .bar-chart:not(.chart-has-data){height:70px!important;min-height:70px!important;display:flex!important;justify-content:center!important;align-items:center!important}
+ #page-home .bar-chart:not(.chart-has-data)::before{content:'لا توجد عمليات كافية لعرض الرسم بعد';color:inherit;opacity:.78;font-size:13px;position:absolute}
+ #page-home .bar-chart:not(.chart-has-data) .bar-group{display:none!important}
+ #page-home .section-title h2,.section-title h2{font-size:17px!important;line-height:1.5!important}
+ .stat-head,.stat-foot,.small,.goal-sub,.debt-meta,.notice,.field label{font-size:13px!important;line-height:1.6!important}
+ .section-title span{font-size:12px!important}
+ #page-savings>.stats{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important}
+ #page-savings>.stats>.card{padding:14px 16px!important;min-height:0!important}
+ #page-savings>.stats>.card:first-child{background:linear-gradient(130deg,#503174,#6e4b9c)!important;color:#fff!important;border-color:transparent!important}
+ #page-savings>.stats>.card:first-child .stat-head,#page-savings>.stats>.card:first-child .stat-value,#page-savings>.stats>.card:first-child .small{color:white!important}
+ #page-savings #savingAccountsCards{grid-template-columns:minmax(0,1fr)!important;gap:9px!important}
+ #page-savings #savingAccountsCards>.saving-account-row{padding:12px 13px!important;border-radius:17px!important;min-height:80px!important;box-sizing:border-box!important;background:transparent!important}
+ #page-savings .account-balance{font-size:clamp(21px,5.5vw,26px)!important;overflow-wrap:anywhere!important}
+ #page-savings .savings-add-details{margin-top:14px}
+ #page-savings .savings-movement{padding:12px 15px!important}
+ #page-savings .card{max-width:100%;min-width:0}
+ .bottom-nav{z-index:70!important;min-height:70px!important;box-sizing:border-box!important;padding:10px 4px max(13px,env(safe-area-inset-bottom))!important}
+ .bottom-nav button{font-size:12px!important;min-height:54px!important}
+ .bottom-nav button span:first-child{font-size:23px!important}
+ .grid,.card,.form-grid,.section-title{min-width:0}
+}
+@media(max-width:375px){main{padding-inline:12px!important}#page-home .bank-head{height:188px!important}#page-home .quick-icon{width:46px!important;height:46px!important}}
+</style>
+<style id="masareefi-touch-motion-v1">
+/* Small GPU-friendly movements. Preserve layout and responsive sizing. */
+:root{--motion-curve:cubic-bezier(.2,.85,.24,1);--motion-glow:rgba(150,93,245,.26)}
+@keyframes mas-card-enter {
+  from {opacity:.55;transform:translate3d(0,19px,0) scale(.985)}
+  to {opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+@keyframes mas-icon-tap {
+  0%{transform:scale(1) rotate(0)}
+  36%{transform:scale(.83) rotate(-8deg)}
+  70%{transform:scale(1.10) rotate(3deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+@keyframes mas-touch-glow {
+  0% {box-shadow:0 0 0 0 var(--motion-glow)}
+  65% {box-shadow:0 0 0 9px transparent}
+  100% {box-shadow:0 0 0 0 transparent}
+}
+@keyframes mas-nav-pop {
+  0%{transform:translateY(3px) scale(.88)}
+  60%{transform:translateY(-3px) scale(1.12)}
+  100%{transform:translateY(0) scale(1)}
+}
+@media (prefers-reduced-motion:no-preference){
+  .mas-reveal.mas-visible {animation:mas-card-enter .52s var(--motion-curve) both}
+  .mas-pressable {transition:transform .2s var(--motion-curve),filter .22s ease,box-shadow .24s ease}
+  .mas-pressable:active {transform:scale(.97)}
+  .mas-pressable.mas-tapped{animation:mas-touch-glow .48s ease-out}
+  .quick-action.mas-tapped .quick-icon{animation:mas-icon-tap .42s var(--motion-curve)!important}
+  .bottom-nav button.mas-tapped span:first-child,.nav button.mas-tapped span:first-child{animation:mas-nav-pop .36s var(--motion-curve)}
+  .saving-account-row.mas-tapped,.card.mas-tapped{filter:brightness(1.07)}
+  .bank-head.mas-tapped{filter:brightness(1.10)}
+}
+@media (prefers-reduced-motion:reduce){
+  .mas-reveal,.mas-visible,.mas-tapped,.mas-pressable{animation:none!important;transition:none!important;transform:none!important}
+}
+</style>
+
+<script id="masareefi-touch-motion-script">
+(function(){
+ 'use strict';
+ var mq=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+ if(mq && mq.matches)return;
+ var reduce=()=>!!(mq&&mq.matches);
+ var cardSelector='.bank-head, .stats > .card, #page-home .savings-strip, #page-home .all-funds-card, .main-grid > .card, .lower-grid > .card, .saving-account-row, .goal, .debt-item, .transaction-item, .settings-group, .settings-list';
+ var touchSelector='button, .quick-action, .saving-account-row, .bank-head, .savings-strip, .all-funds-card, .bottom-nav button, .nav button';
+ var observer;
+ if('IntersectionObserver' in window){
+   observer=new IntersectionObserver(function(entries){
+     if(reduce())return;
+     entries.forEach(function(item){
+       if(!item.isIntersecting)return;
+       var el=item.target;
+       if(el.closest('.page') && el.closest('.page').style.display==='none')return;
+       el.classList.remove('mas-visible');
+       void el.offsetWidth;
+       el.classList.add('mas-visible');
+       observer.unobserve(el);
+     });
+   },{threshold:.08,rootMargin:'0px 0px -18px 0px'});
+ }
+ function register(root){
+   if(!observer || reduce())return;
+   var list=root.querySelectorAll?root.querySelectorAll(cardSelector):[];
+   list.forEach(function(el){
+     if(el.dataset.masMotionReady)return;
+     el.dataset.masMotionReady='1';
+     el.classList.add('mas-reveal');
+     observer.observe(el);
+   });
+ }
+ register(document);
+ if('MutationObserver' in window){
+   var changes=new MutationObserver(function(records){
+     var changed=false;
+     for(var i=0;i<records.length;i++){
+       if(records[i].addedNodes.length){changed=true;break}
+     }
+     if(changed) register(document);
+   });
+   changes.observe(document.body,{childList:true,subtree:true});
+ }
+ var lastTap=new WeakMap();
+ document.addEventListener('pointerdown',function(ev){
+   if(reduce())return;
+   var el=ev.target.closest&&ev.target.closest(touchSelector);
+   if(!el||el.disabled)return;
+   el.classList.add('mas-pressable');
+   el.classList.remove('mas-tapped');
+   void el.offsetWidth;
+   el.classList.add('mas-tapped');
+   var prev=lastTap.get(el);
+   if(prev) clearTimeout(prev);
+   lastTap.set(el,setTimeout(function(){el.classList.remove('mas-tapped')},520));
+ },{passive:true});
+ document.addEventListener('keydown',function(ev){
+   if(ev.key!=='Enter'&&ev.key!==' ')return;
+   var el=ev.target.closest&&ev.target.closest(touchSelector);
+   if(!el||el.disabled)return;
+   el.classList.remove('mas-tapped');void el.offsetWidth;el.classList.add('mas-tapped');
+   setTimeout(function(){el.classList.remove('mas-tapped')},500);
+ });
+})();
+</script>
+</body></html>
