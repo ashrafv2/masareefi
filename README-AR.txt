@@ -1,5 +1,8 @@
 مصاريفي 2.0 — الإصدار الرسمي 23 (30 أكتوبر 2026)
 
+لأي مطور أو حساب ChatGPT جديد: ابدأ بقراءة دليل التطوير الدائم DEVELOPMENT_GUIDE_AR.md
+https://github.com/ashrafv2/masareefi/blob/main/DEVELOPMENT_GUIDE_AR.md
+
 الموقع الرسمي: https://ashrafv2.github.io/masareefi/
 المصدر: https://github.com/ashrafv2/masareefi
 
