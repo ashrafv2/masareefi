@@ -40,7 +40,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/id="paydayDaySelect"/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
-test('RC23 official keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
+test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
  assert.ok(app.includes("const KEY='"+localKey+"'"));
  assert.match(cloud,/masareefi_finance_sync_v19_official/);
  assert.match(vault,/masareefi_v22_device_vault_official/);
@@ -70,7 +70,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.ok(!vault.includes('localStorage'));
  assert.match(cloud,/syncAutoV22/);
 });
-test('PWA caches and refreshes both sync scripts',()=>{
+test('PWA cache is refreshed and both sync scripts stay available',()=>{\n assert.match(worker,/masareefi-official-shell-v24-20261102/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
