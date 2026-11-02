@@ -1,4 +1,4 @@
-name: Masareefi official RC23 regression checks
+name: Masareefi official regression checks
 
 on:
   push:
@@ -34,5 +34,5 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Run RC23 source and quarantine regressions
+      - name: Run source and quarantine regression checks
         run: node --test tests/rc23.test.mjs
