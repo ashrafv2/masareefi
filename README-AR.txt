@@ -1,4 +1,4 @@
-مصاريفي 2.0 — الإصدار الرسمي 23 (30 أكتوبر 2026)
+مصاريفي 2.0 — الإصدار الرسمي 24 (2 نوفمبر 2026)
 
 لأي مطور أو حساب ChatGPT جديد: ابدأ بقراءة دليل التطوير الدائم DEVELOPMENT_GUIDE_AR.md
 https://github.com/ashrafv2/masareefi/blob/main/DEVELOPMENT_GUIDE_AR.md
@@ -6,7 +6,7 @@ https://github.com/ashrafv2/masareefi/blob/main/DEVELOPMENT_GUIDE_AR.md
 الموقع الرسمي: https://ashrafv2.github.io/masareefi/
 المصدر: https://github.com/ashrafv2/masareefi
 
-يحتفظ التطبيق بالسجلات المالية المحلية في مساحة التخزين الأصلية للنسخة الرسمية: masareefi_v2_official، وبمرفقاتها في masareefi_v2_receipts_official.
+تبدأ دورة الميزانية افتراضيًا يوم 27 من الشهر، ويمكن تغيير الموعد من الإعدادات. تواريخ العمليات لا تتغير عند تغيير الدورة.\n\nيحتفظ التطبيق بالسجلات المالية المحلية في مساحة التخزين الأصلية للنسخة الرسمية: masareefi_v2_official، وبمرفقاتها في masareefi_v2_receipts_official.
 ملفات التطبيق المستضافة في GitHub Pages لا تحتوي على بياناتك المالية الشخصية.
 
 قبل الانتقال من النسخة التجريبية:
@@ -22,4 +22,4 @@ https://github.com/ashrafv2/masareefi/blob/main/DEVELOPMENT_GUIDE_AR.md
 تشغيل اختبارات الانحدار: .github/workflows/rc23-tests.yml
 تفاصيل Firebase: FIREBASE_SYNC_SETUP_AR.md
 الاختصارات: SHORTCUTS_IOS_AR.md
-التوثيق التفصيلي: RELEASE_V23_2026-10-30.md
+دورة الراتب وملاحظات الإصدار: RELEASE_V24_2026-11-02.md
