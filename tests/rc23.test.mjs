@@ -31,6 +31,10 @@ test('payday budget cycles use configured dates and retain original financial st
  assert.equal(cycle.currentEndMonth('2026-11-27',27),'2026-12');
  assert.deepEqual(JSON.parse(JSON.stringify(cycle.forEndMonth('2026-11',27))),{start:'2026-10-27',end:'2026-11-27'});
  assert.deepEqual(JSON.parse(JSON.stringify(cycle.forEndMonth('2026-03',31))),{start:'2026-02-28',end:'2026-03-31'});
+ const label=cycle.label('2026-11',27);
+ assert.match(label,/أكتوبر/);
+ assert.match(label,/نوفمبر/);
+ assert.doesNotMatch(label,/جمادى|هـ/);
  assert.ok(app.includes("const KEY='masareefi_v2_official'"));
  assert.ok(app.includes("const DB_NAME='masareefi_v2_receipts_official'"));
 });
