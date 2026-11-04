@@ -409,7 +409,7 @@ body.entry-v13-open{overflow:hidden}
  <div class="card" id="recurringList"></div>
  <div class="notice">يُسجّل الدخل المتكرر في تاريخ استحقاقه عند فتح التطبيق في ذلك اليوم أو بعده. لن تُنشأ العملية مرتين للشهر نفسه.</div>
 </section>
-<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار الرسمي 25 · 4 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في الإصدار 25؟</summary><p>لصق مجموعة رسائل بنكية، دعم صيغ الراجحي والأهلي، تبسيط التصنيفات وتذكّر تصنيف المتجر من العمليات المحفوظة.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
+<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار الرسمي 26 · 4 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في الإصدار 26؟</summary><p>أيقونات حسب تصنيف المصروف، ورمز نصي للبيك عند ظهور EXPRESS F في رسالة البنك.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
 <button class="settingsitem" id="themeColors">لون التطبيق <span>‹</span></button><button class="settingsitem" id="paydaySettings" type="button">موعد الراتب ودورة الميزانية <span id="paydaySettingSummary">يوم 27 · تعديل</span></button>
 <button class="settingsitem" id="smartPasteSettingsOpen" type="button">📋 لصق الرسائل البنكية الذكي <span>‹</span></button><button class="settingsitem" id="shortcutHelpV16" type="button">📩 ربط رسائل البنك باختصارات الآيفون <span>‹</span></button>
 <button class="settingsitem" data-go="incomeLedger">سجل الدخل والراتب المتكرر <span>‹</span></button><button class="settingsitem" data-go="receipts">أرشيف الفواتير <span>‹</span></button><button class="settingsitem" data-go="backup">النسخ الاحتياطي اليدوي <span>‹</span></button><button class="settingsitem" id="financeSyncSettingsV19" type="button">☁ المزامنة المالية بين الأجهزة <span>‹</span></button><div id="syncConnectionSummaryV20" class="sync-summary-v20" role="status" aria-live="polite">جارٍ فحص حالة المزامنة...</div><button class="settingsitem" data-go="budget">الميزانية <span>‹</span></button><button class="settingsitem" data-go="debts">الأقساط والديون <span>‹</span></button><button class="settingsitem" data-go="goals">الأهداف الادخارية <span>‹</span></button><button class="settingsitem" data-go="reports">التقارير <span>‹</span></button></div><div class="notice">البيانات محفوظة في هذا المتصفح. أنشئ نسخة JSON في Google Drive أو iCloud Drive يدويًا بانتظام. يمكن تفعيل المزامنة المالية المشفرة من الإعدادات؛ تعمل أثناء فتح التطبيق وبعد تسجيل الدخول.</div></section>
@@ -623,6 +623,8 @@ function conciseMerchant(note){
 /* v17: Offline merchant identification marks. These are compact, locally rendered
    identification badges, not downloaded official trademark artwork. */
 const merchantLogoCatalogV17=[
+ {id:'albaik',name:'البيك',mark:'البيك',accent:'#c42127',background:'#fff2d9',kind:'text',
+  aliases:['express f','albaik','البيك'],branch:false},
  {id:'ejar',name:'منصة إيجار',mark:'إيجار',accent:'#007861',background:'#e4f8f1',kind:'ejar',
   aliases:['منصة إيجار','شبكة إيجار','ejar','ejar sa','ejar platform','ejar payment'],branch:false},
  {id:'aldawaa',name:'صيدليات الدواء',mark:'دواء',accent:'#188552',background:'#e6f7ed',kind:'medical',
@@ -766,6 +768,15 @@ function merchantIconV17(t){
 
 function transactionIconV12(category){
  const label=String(category||'');
+ const paths=[
+  [/مطعم|مطاعم|طعام|وجبات/,'<path d="M5 3v7m-3-7v5a3 3 0 0 0 6 0V3M5 11v10M18 3c-3 3-4 6-4 10h4m0-10v18"/>'],
+  [/بقالة|تسوق|مقاضي|غذاء/,'<path d="M2 3h3l3 12h11l3-9H6M9 19h.01M18 19h.01"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/>'],
+  [/اتصالات|إنترنت|انترنت|اشتراك/,'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 18h4M10 5h4"/>'],
+  [/سكن|منزل|إيجار|ايجار|البيت/,'<path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-7h6v7"/>'],
+  [/صحة|صحي|صيدلي|علاج|دواء/,'<rect x="3" y="7" width="18" height="14" rx="3"/><path d="M8 7V3h8v4M12 11v6M9 14h6"/>']
+ ];
+ const matched=paths.find(([pattern])=>pattern.test(label));
+ if(matched)return '<svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+matched[1]+'</svg>';
  if(/وقود|بنزين/.test(label)){
   return '<svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V7a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v14M3 21h16M7 8h8v5H7zM17 9h2l2 3v6a2 2 0 0 1-4 0v-4"/></svg>';
  }
@@ -1802,7 +1813,9 @@ function parseMessage(message){
  const isIncoming=/(?:راتب|إيداع|حوالة\s*واردة|تحويل\s*وارد|دائن|received|credited|salary|deposit)/i.test(txt);
  const type=isIncoming&&!isOutgoing?'income':'expense';
  const amount=findAmount(txt),date=findDate(txt)||today(),merchant=findMerchant(message);
- const options=catOptions(type)||[],guessed=rememberedMerchantCategory(merchant,type,options,data.transactions)||guessCategory(txt,type);
+ const options=catOptions(type)||[];
+ const albaikCategory=type==='expense'&&/^express\s+f$/i.test(String(merchant||'').trim())?options.find(c=>/^(مطعم|مطاعم)$/.test(c)):'';
+ const guessed=rememberedMerchantCategory(merchant,type,options,data.transactions)||albaikCategory||guessCategory(txt,type);
  return {message,type,amount,date,category:options.includes(guessed)?guessed:(options[0]||''),note:merchant||'عملية بنكية',sourceKey:'sms-v1:'+smsFingerprintV16(txt.replace(/\s+/g,' ').toLowerCase())};
 }
 function splitMessages(value){
