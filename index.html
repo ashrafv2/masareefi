@@ -409,7 +409,7 @@ body.entry-v13-open{overflow:hidden}
  <div class="card" id="recurringList"></div>
  <div class="notice">يُسجّل الدخل المتكرر في تاريخ استحقاقه عند فتح التطبيق في ذلك اليوم أو بعده. لن تُنشأ العملية مرتين للشهر نفسه.</div>
 </section>
-<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار الرسمي 27 · 4 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في الإصدار 27؟</summary><p>اختيار التصنيف بطريقة مرئية مثل وفير: أيقونات كبيرة، الأكثر استخدامًا أولًا، وبحث سريع بدل القائمة الطويلة.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
+<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار الرسمي 28 · 4 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في الإصدار 28؟</summary><p>رفع شعار المتجر الحقيقي من جهازك، مع معاينته وتغييره أو إزالته، وإظهاره على جميع عمليات المتجر نفسه. الشعارات محلية وتدخل ضمن النسخة الاحتياطية الشاملة.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
 <button class="settingsitem" id="themeColors">لون التطبيق <span>‹</span></button><button class="settingsitem" id="paydaySettings" type="button">موعد الراتب ودورة الميزانية <span id="paydaySettingSummary">يوم 27 · تعديل</span></button>
 <button class="settingsitem" id="smartPasteSettingsOpen" type="button">📋 لصق الرسائل البنكية الذكي <span>‹</span></button><button class="settingsitem" id="shortcutHelpV16" type="button">📩 ربط رسائل البنك باختصارات الآيفون <span>‹</span></button>
 <button class="settingsitem" data-go="incomeLedger">سجل الدخل والراتب المتكرر <span>‹</span></button><button class="settingsitem" data-go="receipts">أرشيف الفواتير <span>‹</span></button><button class="settingsitem" data-go="backup">النسخ الاحتياطي اليدوي <span>‹</span></button><button class="settingsitem" id="financeSyncSettingsV19" type="button">☁ المزامنة المالية بين الأجهزة <span>‹</span></button><div id="syncConnectionSummaryV20" class="sync-summary-v20" role="status" aria-live="polite">جارٍ فحص حالة المزامنة...</div><button class="settingsitem" data-go="budget">الميزانية <span>‹</span></button><button class="settingsitem" data-go="debts">الأقساط والديون <span>‹</span></button><button class="settingsitem" data-go="goals">الأهداف الادخارية <span>‹</span></button><button class="settingsitem" data-go="reports">التقارير <span>‹</span></button></div><div class="notice">البيانات محفوظة في هذا المتصفح. أنشئ نسخة JSON في Google Drive أو iCloud Drive يدويًا بانتظام. يمكن تفعيل المزامنة المالية المشفرة من الإعدادات؛ تعمل أثناء فتح التطبيق وبعد تسجيل الدخول.</div></section>
@@ -672,6 +672,8 @@ function merchantLogoByIdV17(id){
 }
 function resolveMerchantLogoV17(t){
  if(!t||t.type!=='expense')return null;
+ const customImage=window.masareefiMerchantImages?.get(t.note);
+ if(customImage)return {name:t.note,customImage};
  if(t.merchantLogoV17==='none')return null;
  const override=merchantLogoByIdV17(t.merchantLogoV17);
  if(override)return override;
@@ -753,6 +755,7 @@ async function loadLogoCatalogV18(){
 
 function merchantLogoBadgeV17(logo){
  if(!logo)return '';
+ if(logo.customImage)return '<img src="'+safe(logo.customImage)+'" alt="'+safe(logo.name)+'" style="width:44px;height:44px;object-fit:contain;border-radius:10px;display:block">';
  let glyph='';
  if(logo.kind==='ejar')glyph='<svg viewBox="0 0 32 18" aria-hidden="true"><path d="M2 4 L18 1 L13 5 L29 2 L24 7 L9 10 L4 8 Z" fill="#00a47c"/><path d="M6 12 L28 8 L23 13 L10 16 Z" fill="#2aabc0"/></svg>';
  if(logo.kind==='medical')glyph='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="20" rx="1.5" fill="#149e6a"/><rect x="2" y="9" width="20" height="6" rx="1.5" fill="#149e6a"/></svg>';
@@ -1094,7 +1097,8 @@ function editTransaction(which){
        <option value="none" ${logoSelected==='none'?'selected':''}>بدون شعار — رمز التصنيف</option>
        ${merchantLogoCatalogV17.map(x=>`<option value="${safe(x.id)}" ${logoSelected===x.id?'selected':''}>${safe(x.name)}</option>`).join('')}
      </select>
-     <div class="logo-inline-hint-v17">رموز محلية تحمل أسماء الجهات، وليست ملفات الشعارات الرسمية.</div>
+     <div class="logo-inline-hint-v17">اختر رمزًا جاهزًا أو ارفع شعار المتجر الحقيقي أدناه. الشعار المرفوع له الأولوية ويظهر لكل العمليات التي تحمل الاسم نفسه.</div>
+     <button class="btn secondary" type="button" data-merchant-image="${safe(t.id)}">شعار المتجر — رفع / تغيير / إزالة</button>
      <label class="logo-remember-v17"><input type="checkbox" name="rememberLogoV17"> تذكر اختياري لهذا الاسم مستقبلًا</label>
    </div>` : ''}
    <div class="field"><label>التاريخ</label><input name="date" type="date" required value="${safe(t.date)}"></div>
@@ -1464,6 +1468,68 @@ async function allFiles(){const db=await getDB();return new Promise((resolve,rej
 async function writeRecord(record){const db=await getDB();return new Promise((resolve,reject)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).put(record);t.oncomplete=resolve;t.onerror=()=>reject(t.error)})}
 async function removeRecord(recordId){const db=await getDB();return new Promise((resolve,reject)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).delete(recordId);t.oncomplete=resolve;t.onerror=()=>reject(t.error)})}
 async function replaceAll(records){const db=await getDB();return new Promise((resolve,reject)=>{const t=db.transaction(STORE,'readwrite');const st=t.objectStore(STORE);st.clear();for(const record of records)st.put(record);t.oncomplete=resolve;t.onerror=()=>reject(t.error)})}
+// Local merchant logos share the attachment archive and its complete backup format.
+const MERCHANT_IMAGE_PREFIX='merchant-image:';
+const merchantImages=new Map();
+function merchantImageKey(note){return merchantLogoKeyV17(conciseMerchant(note)||note||'')}
+function isMerchantImage(record){return String(record.id).startsWith(MERCHANT_IMAGE_PREFIX)&&record.txId===record.id&&['image/png','image/jpeg','image/webp'].includes(record.type)}
+async function refreshMerchantImages(){
+ const records=await allFiles(),next=new Map();
+ for(const record of records)if(isMerchantImage(record))next.set(record.id.slice(MERCHANT_IMAGE_PREFIX.length),URL.createObjectURL(record.blob));
+ const old=[...merchantImages.values()];merchantImages.clear();for(const [key,url] of next)merchantImages.set(key,url);
+ render();old.forEach(url=>URL.revokeObjectURL(url));
+}
+window.masareefiMerchantImages={get:note=>merchantImages.get(merchantImageKey(note))};
+async function prepareMerchantImage(file){
+ if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('اختر صورة PNG أو JPEG أو WebP.');
+ if(!file.size||file.size>MAX_FILE)throw Error('حجم الصورة يجب ألا يتجاوز 8 ميجابايت.');
+ const url=URL.createObjectURL(file),img=new Image();
+ try{
+  await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(Error('تعذر قراءة الصورة.'));img.src=url});
+  const scale=Math.min(1,512/Math.max(img.naturalWidth,img.naturalHeight));
+  const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+  canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+  return await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(Error('تعذر تجهيز الصورة.')),'image/png'));
+ }finally{URL.revokeObjectURL(url)}
+}
+function openMerchantImageEditor(note){
+ const key=merchantImageKey(note);
+ if(!key||key===merchantImageKey('عملية بنكية')){alert('اكتب اسم المتجر واحفظ العملية أولًا، ثم أضف شعاره.');return}
+ const id=MERCHANT_IMAGE_PREFIX+key,dialog=document.createElement('dialog');
+ dialog.dir='rtl';dialog.style.cssText='width:min(90vw,460px);max-height:85vh;overflow:auto;border:0;border-radius:22px;padding:22px';
+ dialog.innerHTML='<h3>شعار '+esc(note)+'</h3><p>يظهر لجميع العمليات التي تحمل اسم المتجر نفسه. محفوظ على هذا الجهاز ومضمن في النسخة الاحتياطية الشاملة؛ لا تتم مزامنته سحابيًا.</p><img alt="معاينة الشعار" style="display:block;width:130px;height:130px;object-fit:contain;margin:16px auto" hidden><label>اختر صورة الشعار<input type="file" accept="image/png,image/jpeg,image/webp" style="display:block;margin:12px 0"></label><p role="status" aria-live="polite"></p><div class="actions"><button type="button" class="btn" data-save disabled>حفظ الشعار</button><button type="button" class="btn danger" data-remove>إزالة الشعار</button><button type="button" class="btn secondary" data-close>إغلاق</button></div>';
+ document.body.append(dialog);dialog.showModal();
+ const preview=dialog.querySelector('img'),input=dialog.querySelector('input'),status=dialog.querySelector('[role=status]'),save=dialog.querySelector('[data-save]'),remove=dialog.querySelector('[data-remove]');
+ let pending=null,previewUrl=null,sequence=0,busy=false;
+ const existing=merchantImages.get(key);if(existing){preview.src=existing;preview.hidden=false}remove.disabled=!existing;
+ dialog.addEventListener('close',()=>{sequence++;if(previewUrl)URL.revokeObjectURL(previewUrl);dialog.remove()});
+ dialog.addEventListener('cancel',e=>{if(busy)e.preventDefault()});
+ dialog.querySelector('[data-close]').onclick=()=>{if(!busy)dialog.close()};
+ input.onchange=async()=>{
+  const ticket=++sequence;pending=null;save.disabled=true;status.textContent='';
+  const file=input.files[0];if(!file)return;
+  try{const blob=await prepareMerchantImage(file);if(ticket!==sequence)return;pending=blob;if(previewUrl)URL.revokeObjectURL(previewUrl);previewUrl=URL.createObjectURL(blob);preview.src=previewUrl;preview.hidden=false;save.disabled=false}catch(e){if(ticket===sequence)status.textContent=e.message}
+ };
+ async function changeImage(deleting){
+  if(busy||(!deleting&&!pending))return;
+  if(deleting&&!confirm('إزالة الشعار المرفوع لجميع عمليات هذا المتجر على هذا الجهاز؟'))return;
+  busy=true;save.disabled=true;remove.disabled=true;input.disabled=true;
+  try{
+   if(deleting)await removeRecord(id);
+   else{const records=await allFiles();if(records.filter(x=>x.id!==id).reduce((n,x)=>n+x.blob.size,0)+pending.size>MAX_TOTAL)throw Error('مساحة المرفقات ممتلئة.');await writeRecord({id,txId:id,name:note,type:pending.type,size:pending.size,warranty:'',created:today(),blob:pending})}
+   await refreshMerchantImages();dialog.close();
+  }catch(e){status.textContent='تعذر حفظ الشعار: '+e.message;save.disabled=!pending;remove.disabled=!merchantImages.has(key)}finally{busy=false;input.disabled=false}
+ }
+ save.onclick=()=>changeImage(false);remove.onclick=()=>changeImage(true);
+}
+document.addEventListener('click',e=>{
+ const button=e.target.closest('[data-merchant-image]');if(!button)return;
+ const tx=data.transactions.find(x=>String(x.id)===button.dataset.merchantImage);if(!tx)return;
+ const form=button.closest('form');if(form&&merchantImageKey(form.elements.note.value)!==merchantImageKey(tx.note)){alert('احفظ تغيير اسم المتجر أولًا ثم أضف شعاره.');return}
+ openMerchantImageEditor(conciseMerchant(tx.note)||tx.note);
+});
+refreshMerchantImages().catch(()=>{});
+
 function toB64(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=()=>reject(reader.error);reader.readAsDataURL(blob)})}
 function fromB64(base64,type){const raw=atob(base64);const bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return new Blob([bytes],{type})}
 function warrantyText(date){if(!date)return 'لا يوجد تاريخ ضمان';const days=Math.ceil((new Date(date+'T12:00:00')-new Date())/86400000);return date+(days<0?' · انتهى الضمان':days<=30?' · ينتهي قريبًا':' · الضمان سارٍ')}
@@ -1524,7 +1590,7 @@ async function importAll(file){
   const oldFiles=await allFiles();const oldData=data;
   if(!confirm('استعادة النسخة ستستبدل بيانات التطبيق الحالية ومرفقاتها. احفظ نسخة احتياطية أولًا. هل تريد المتابعة؟'))return;
   window.masareefiSyncV19?.onBulkRestore?.();
-  try{await replaceAll(mapped);data=hydrate(raw);persist();setQuickType('expense');applyTheme();await showArchive();alert('استُرجعت البيانات والفواتير بنجاح.')}catch(e){await replaceAll(oldFiles);data=oldData;persist();throw e}
+  try{await replaceAll(mapped);data=hydrate(raw);persist();setQuickType('expense');applyTheme();await showArchive();await refreshMerchantImages();alert('استُرجعت البيانات والفواتير بنجاح.')}catch(e){await replaceAll(oldFiles);data=oldData;persist();await refreshMerchantImages();throw e}
  }catch(e){alert('تعذرت الاستعادة: '+e.message)}
 }
 /* v15: Read-only data integrity check. No records, savings or files are modified. */
@@ -1564,7 +1630,7 @@ function releaseCheckV15(){
   try{
     const receipts=await allFiles();
     const txIds=new Set((data.transactions||[]).map(t=>String(t.id)));
-    const orphan=receipts.filter(x=>!txIds.has(String(x.txId)));
+    const orphan=receipts.filter(x=>!isMerchantImage(x)&&!txIds.has(String(x.txId)));
     const bytes=receipts.reduce((sum,x)=>sum+(Number(x.size)||0),0);
     if(orphan.length)warnings.push('توجد '+orphan.length+' فاتورة غير مرتبطة بعملية حالية');
     if(bytes>MAX_TOTAL)warnings.push('تجاوز حجم المرفقات حد النسخ الشامل');
