@@ -122,6 +122,20 @@ test('batch paste still supports blank-line-separated messages',()=>{
  const splitMessages=batchSplitter();
  assert.equal(splitMessages('شراء 5 SAR من متجر A\n\nشراء 12 SAR من متجر B').length,2);
 });
+test('English POS, deposit and online notifications split without blank lines',()=>{
+ const split=batchSplitter();
+ const pos='PoS Purchase\nBy:0000;mada-Apple Pay\nAmount: SAR 50\nAt:Test Store\n28/10/26 19:13';
+ const deposit='Deposit:Saving Account Monthly Profit\nAmount:SAR 1.08\nTo:0000\n1/11/26 07:47';
+ const online='Online Purchase\nAmount:SR 28.75\nAt:Test Telecom\n2/11/26 14:31';
+ assert.equal(split(Array(21).fill(pos).concat([deposit,online]).join('\n')).length,23);
+ const amount=app.match(/function amountNumber\(str\)\{[\s\S]*?\n\}/)[0];
+ const find=app.match(/function findAmount\(text\)\{[\s\S]*?\n\}/)[0];
+ assert.equal(new Function(amount+'\n'+find+'\nreturn findAmount')( )('Amount:SR 28.75'),28.75);
+});
+test('batch analysis falls back to the single-message parser for one pasted SMS',()=>{
+ assert.match(app,/if\(messages\.length===1\)\{\s*analyze\(\);/);
+ assert.doesNotMatch(app,/if\(messages\.length<2\)\{status\.textContent='لم أجد رسالتين منفصلتين/);
+});
 test('classification blocks concurrent changes rather than selecting a winner',()=>{
  const source=cloud.match(/function classification\(remoteHash,localHash,baselineHash\)\{[\s\S]*?\n\}/)?.[0];
  assert.ok(source,'classification source missing');
