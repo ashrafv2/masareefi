@@ -1804,7 +1804,12 @@ function renderBatch(items){
 }
 function analyzeBatch(){
  const messages=splitMessages(raw.value);
- if(messages.length<2){status.textContent='لم أجد رسالتين منفصلتين. اترك سطرًا فارغًا بين الرسائل ثم أعد المحاولة.';return}
+ if(messages.length===1){
+  analyze();
+  status.textContent='تم العثور على رسالة واحدة وتحليلها. للصق عدة رسائل، اترك سطرًا فارغًا بين كل رسالة.';
+  return;
+ }
+ if(!messages.length){status.textContent='الصق رسالة واحدة على الأقل أولًا.';return}
  const items=messages.map(parseMessage);renderBatch(items);
  const valid=items.filter(x=>x.amount!==null&&x.category).length;
  status.textContent=`تم تحليل ${items.length} رسائل. ${valid} مكتملة؛ راجع الحقول قبل الحفظ.`;
