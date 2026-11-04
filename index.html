@@ -1774,11 +1774,16 @@ function splitMessages(value){
  if(blocks.length>1)return blocks;
  const lines=normalized.split('\n');let out=[],current=[];
  for(const line of lines){
-  if(current.length&&/^(?:شراء\s*[-–—]?\s*POS|POS\s*[-–—]?\s*شراء|راتب|حوالة\s+(?:واردة|صادرة)|تحويل\s+(?:وارد|صادر))/i.test(line.trim())){out.push(current.join('\n').trim());current=[]}
+  if(current.length&&/^(?:مصرف\s+الراجحي|الراجحي|شراء\s*[-–—]?\s*POS|POS\s*[-–—]?\s*شراء|شراء(?:\s|$)|راتب|إيداع|سحب|سداد|خصم|حوالة\s+(?:واردة|صادرة)|تحويل\s+(?:وارد|صادر)|عملية\s+(?:شراء|سحب|إيداع|تحويل|نقاط))/i.test(line.trim())){out.push(current.join('\n').trim());current=[]}
   current.push(line);
  }
  if(current.length)out.push(current.join('\n').trim());
- return out.filter(Boolean);
+ out=out.filter(Boolean);
+ if(out.length>1)return out;
+ // Some Al Rajhi shares arrive as one wrapped paragraph without blank lines.
+ const compact=normalized.replace(/\s+/g,' ').trim();
+ const joined=compact.split(/(?=(?:مصرف\s+الراجحي|الراجحي|تمت\s+(?:عملية|الحوالة)|عملية\s+(?:شراء|سحب|إيداع|تحويل|نقاط)|شراء(?:\s|$)|إيداع(?:\s|$)|سحب(?:\s|$)|سداد(?:\s|$)|خصم(?:\s|$)|حوالة\s+(?:واردة|صادرة)|تحويل\s+(?:وارد|صادر)))/i).map(x=>x.trim()).filter(Boolean);
+ return joined.length>1?joined:out;
 }
 function batchOptionValues(type,selected){return (catOptions(type)||[]).map(x=>`<option value="${safe(x)}" ${x===selected?'selected':''}>${safe(x)}</option>`).join('')}
 function renderBatch(items){

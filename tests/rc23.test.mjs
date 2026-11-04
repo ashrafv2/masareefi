@@ -21,6 +21,11 @@ function merchantParser(){
  assert.ok(normalize&&findMerchant,'merchant parser source missing');
  return new Function(`${normalize}\n${findMerchant}\nreturn findMerchant`)();
 }
+function batchSplitter(){
+ const source=app.match(/function splitMessages\(value\)\{[\s\S]*?\n\}/)?.[0];
+ assert.ok(source,'batch splitter source missing');
+ return new Function(`${source}\nreturn splitMessages`)();
+}
 
 test('JavaScript sources and all inline scripts parse',()=>{
  for(const [name,source] of [['cloud',cloud],['vault',vault],['worker',worker]])
@@ -107,6 +112,15 @@ test('batch paste mode exposes split, preview and bulk-save flow',()=>{
  assert.match(app,/function analyzeBatch\(\)/);
  assert.match(app,/function saveBatch\(\)/);
  assert.match(app,/smartPasteBatchSave/);
+});
+test('batch paste splits consecutive Al Rajhi messages without blank lines',()=>{
+ const splitMessages=batchSplitter();
+ const text='شراء 5 SAR من متجر A بتاريخ 03/11/2026 شراء 12 SAR من متجر B بتاريخ 03/11/2026';
+ assert.equal(splitMessages(text).length,2);
+});
+test('batch paste still supports blank-line-separated messages',()=>{
+ const splitMessages=batchSplitter();
+ assert.equal(splitMessages('شراء 5 SAR من متجر A\n\nشراء 12 SAR من متجر B').length,2);
 });
 test('classification blocks concurrent changes rather than selecting a winner',()=>{
  const source=cloud.match(/function classification\(remoteHash,localHash,baselineHash\)\{[\s\S]*?\n\}/)?.[0];
