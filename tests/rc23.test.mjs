@@ -122,6 +122,10 @@ test('batch paste still supports blank-line-separated messages',()=>{
  const splitMessages=batchSplitter();
  assert.equal(splitMessages('شراء 5 SAR من متجر A\n\nشراء 12 SAR من متجر B').length,2);
 });
+test('batch analysis falls back to the single-message parser for one pasted SMS',()=>{
+ assert.match(app,/if\(messages\.length===1\)\{\s*analyze\(\);/);
+ assert.doesNotMatch(app,/if\(messages\.length<2\)\{status\.textContent='لم أجد رسالتين منفصلتين/);
+});
 test('classification blocks concurrent changes rather than selecting a winner',()=>{
  const source=cloud.match(/function classification\(remoteHash,localHash,baselineHash\)\{[\s\S]*?\n\}/)?.[0];
  assert.ok(source,'classification source missing');
