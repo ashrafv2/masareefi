@@ -1648,6 +1648,7 @@ body:has(select:focus) #entryLauncher { display:none!important; }
 .smart-form-row{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 .smart-paste-status{font-size:12px;background:#f0f8ee;color:#355a3a;padding:10px;border-radius:10px;line-height:1.7}
 .smart-paste-batch-results{display:grid;gap:10px;margin-top:12px}
+.smart-paste-dialog [hidden]{display:none!important}
 .smart-paste-batch-card{border:1px solid #d2dfd3;border-radius:14px;padding:10px;background:#fbfdfb}
 .smart-paste-batch-card.is-invalid{border-color:#e6b4a9;background:#fff9f7}
 .smart-paste-batch-card .smart-form-row{margin-top:0}
@@ -1739,6 +1740,34 @@ function findMerchant(message){
  }
  return null;
 }
+function simplifyCategorySelect(select){
+ if(!select)return;
+ if(select._simpleCategory){select._simpleCategory();return}
+ const originalLabel=select.closest('label');
+ const wrapper=document.createElement('div');
+ const mainLabel=document.createElement('label'),detailLabel=document.createElement('label');
+ mainLabel.textContent='التصنيف الرئيسي';detailLabel.textContent='تفصيل إضافي — اختياري';
+ const main=document.createElement('select'),detail=document.createElement('select');
+ mainLabel.append(main);detailLabel.append(detail);wrapper.append(mainLabel,detailLabel);
+ originalLabel.before(wrapper);originalLabel.hidden=true;
+ function sync(){
+  const values=[...select.options].map(o=>o.value),selected=select.value;
+  const parents=[...new Set(values.map(v=>v.split(' / ')[0]))];
+  main.replaceChildren(...parents.map(v=>new Option(v,v)));
+  main.value=selected.split(' / ')[0];
+  const children=values.filter(v=>v.startsWith(main.value+' / '));
+  detail.replaceChildren(new Option('بدون تفصيل',main.value),...children.map(v=>new Option(v.slice(main.value.length+3),v)));
+  detail.value=selected;detailLabel.hidden=!children.length;
+ }
+ main.addEventListener('change',()=>{
+  if(![...select.options].some(o=>o.value===main.value))select.add(new Option(main.value,main.value));
+  select.value=main.value;sync();select.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+ detail.addEventListener('change',()=>{select.value=detail.value;select.dispatchEvent(new Event('change',{bubbles:true}))});
+ select.addEventListener('change',sync);
+ new MutationObserver(sync).observe(select,{childList:true});
+ select._simpleCategory=sync;sync();
+}
 function categories(){
  const type=e('smartPasteType').value;
  let opts=[];
@@ -1746,6 +1775,7 @@ function categories(){
  const select=e('smartPasteCategory'),previous=select.value;
  select.replaceChildren(...opts.map(name=>new Option(name,name)));
  if(opts.includes(previous))select.value=previous;
+ simplifyCategorySelect(select);
 }
 function guessCategory(text,type){
  const groups=type==='income'?[['راتب','salary'],['عمل إضافي','freelance']]:[
@@ -1798,6 +1828,7 @@ function renderBatch(items){
   <label>الوصف<input data-batch-note maxlength="160" value="${safe(item.note)}"></label>
  </div>`).join('')+`<button type="button" class="btn smart-paste-batch-save" id="smartPasteBatchSave">تأكيد وحفظ المحدد</button>`;
  batchResults.hidden=false;
+ batchResults.querySelectorAll('[data-batch-category]').forEach(simplifyCategorySelect);
  batchResults.querySelectorAll('[data-batch-type]').forEach(select=>select.addEventListener('change',()=>{
   const card=select.closest('[data-batch-index]'),category=card.querySelector('[data-batch-category]'),previous=category.value;
   category.innerHTML=batchOptionValues(select.value,previous);
@@ -1838,6 +1869,7 @@ function analyze(){
  e('smartPasteAmount').value=item.amount===null?'':String(item.amount);
  e('smartPasteDate').value=item.date;
  e('smartPasteCategory').value=item.category;
+ simplifyCategorySelect(e('smartPasteCategory'));
  // Never put the entire bank SMS in the transaction description.
  e('smartPasteDescription').value=item.note;
  status.textContent=item.amount===null?'لم أحدد المبلغ بثقة؛ أدخله يدويًا ثم راجع باقي الحقول.':'تم استخراج بيانات أولية. راجع المبلغ ونوع العملية والتصنيف والتاريخ قبل الحفظ.';
