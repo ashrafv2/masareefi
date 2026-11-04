@@ -15,6 +15,19 @@ const app=read('index.html'),cloud=read('cloud-sync.js'),
   vault=read('device-vault.js'),worker=read('sw.js'),rules=read('firestore.rules');
 const localKey='masareefi_v2_official';
 
+test('merchant suggestions reuse saved categories without crossing types or removed categories',()=>{
+ const source=app.match(/function rememberedMerchantCategory\(merchant,type,options,transactions\)\{[\s\S]*?\n\}/)[0];
+ const recall=new Function(source+';return rememberedMerchantCategory')();
+ const options=['فواتير','فواتير / اتصالات','بقالة'];
+ const records=[{note:' MOBILY ',type:'expense',category:'فواتير / اتصالات'},{note:'Mobily',type:'expense',category:'بقالة'}];
+ assert.equal(recall('mobily','expense',options,records),'فواتير / اتصالات');
+ assert.equal(recall('Mobily','income',options,records),'');
+ assert.equal(recall('Mobily','expense',['فواتير'],records),'');
+ assert.equal(recall('Unknown','expense',options,records),'');
+ assert.equal(recall('عملية بنكية','expense',options,[{note:'عملية بنكية',type:'expense',category:'بقالة'}]),'');
+ assert.equal(recall('Mobily','expense',options,[{note:'Mobily',type:'expense',category:'فواتير'},...records]),'فواتير');
+});
+
 function merchantParser(){
  const normalize=app.match(/function normalize\(str\)\{[\s\S]*?\n\}/)?.[0];
  const findMerchant=app.match(/function findMerchant\(message\)\{[\s\S]*?\n\}/)?.[0];
