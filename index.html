@@ -409,9 +409,9 @@ body.entry-v13-open{overflow:hidden}
  <div class="card" id="recurringList"></div>
  <div class="notice">يُسجّل الدخل المتكرر في تاريخ استحقاقه عند فتح التطبيق في ذلك اليوم أو بعده. لن تُنشأ العملية مرتين للشهر نفسه.</div>
 </section>
-<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار الرسمي 28 · 4 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في الإصدار 28؟</summary><p>رفع شعار المتجر الحقيقي من جهازك، مع معاينته وتغييره أو إزالته، وإظهاره على جميع عمليات المتجر نفسه. الشعارات محلية وتدخل ضمن النسخة الاحتياطية الشاملة.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
+<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار التجريبي 29 · 4 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في تجربة الإصدار 29؟</summary><p>وارد محلي لرسائل اختصارات الآيفون، مع مراجعة قبل الحفظ ومنع تكرار الرسالة نفسها. هذه النسخة للتجربة ولم تُنشر رسميًا.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
 <button class="settingsitem" id="themeColors">لون التطبيق <span>‹</span></button><button class="settingsitem" id="paydaySettings" type="button">موعد الراتب ودورة الميزانية <span id="paydaySettingSummary">يوم 27 · تعديل</span></button>
-<button class="settingsitem" id="smartPasteSettingsOpen" type="button">📋 لصق الرسائل البنكية الذكي <span>‹</span></button><button class="settingsitem" id="shortcutHelpV16" type="button">📩 ربط رسائل البنك باختصارات الآيفون <span>‹</span></button>
+<button class="settingsitem" id="smartPasteSettingsOpen" type="button">📋 لصق الرسائل البنكية الذكي <span>‹</span></button><button class="settingsitem" id="smsInboxOpen" type="button">📩 وارد الرسائل للمراجعة</button><button class="settingsitem" id="shortcutHelpV16" type="button">📩 ربط رسائل البنك باختصارات الآيفون <span>‹</span></button>
 <button class="settingsitem" data-go="incomeLedger">سجل الدخل والراتب المتكرر <span>‹</span></button><button class="settingsitem" data-go="receipts">أرشيف الفواتير <span>‹</span></button><button class="settingsitem" data-go="backup">النسخ الاحتياطي اليدوي <span>‹</span></button><button class="settingsitem" id="financeSyncSettingsV19" type="button">☁ المزامنة المالية بين الأجهزة <span>‹</span></button><div id="syncConnectionSummaryV20" class="sync-summary-v20" role="status" aria-live="polite">جارٍ فحص حالة المزامنة...</div><button class="settingsitem" data-go="budget">الميزانية <span>‹</span></button><button class="settingsitem" data-go="debts">الأقساط والديون <span>‹</span></button><button class="settingsitem" data-go="goals">الأهداف الادخارية <span>‹</span></button><button class="settingsitem" data-go="reports">التقارير <span>‹</span></button></div><div class="notice">البيانات محفوظة في هذا المتصفح. أنشئ نسخة JSON في Google Drive أو iCloud Drive يدويًا بانتظام. يمكن تفعيل المزامنة المالية المشفرة من الإعدادات؛ تعمل أثناء فتح التطبيق وبعد تسجيل الدخول.</div></section>
 <section class="page" id="p-receipts"><div class="screenhead"><h2>أرشيف الفواتير</h2></div>
 <div class="notice">تُحفظ المرفقات محليًا في المتصفح. احفظ نسخة احتياطية شاملة على Drive أو iCloud لحماية الصور والملفات.</div>
@@ -1780,6 +1780,10 @@ function normalize(str){
  const ar='٠١٢٣٤٥٦٧٨٩',pers='۰۱۲۳۴۵۶۷۸۹';
  return String(str||'').replace(/[٠-٩۰-۹]/g,c=>{const i=ar.indexOf(c);return String(i>=0?i:pers.indexOf(c))}).replace(/[\u200e\u200f\u061c]/g,'');
 }
+window.masareefiSmsIdentity=function(raw){
+ const normalized=normalize(raw).trim().replace(/\s+/g,' ').toLowerCase();
+ return {source:'sms-v1:'+smsFingerprintV16(normalized),legacy:'message:'+normalized};
+};
 function amountNumber(str){
  let v=str.trim().replace(/[\s٬]/g,'').replace(/٫/g,'.');
  if(v.includes(',')&&v.includes('.')) v=v.lastIndexOf(',')>v.lastIndexOf('.')?v.replace(/\./g,'').replace(',','.'):v.replace(/,/g,'');
@@ -2311,11 +2315,58 @@ function entryKeyLogicV13(current,key){
 (function(){
  'use strict';
  const PREFIX='#masareefi-sms=';
- const BASE='https://ashrafv2.github.io/masareefi/'+PREFIX;
+ const BASE=location.origin+location.pathname+PREFIX;
  const el=id=>document.getElementById(id);
  const spends=/(?:\bPOS\s*Purchase\b|\bPay\s*Amount\b|\bDebit\b|\bPurchase\b|شراء|خصم|نقاط\s*بيع|سحب|حوالة\s*صادرة|تحويل\s*صادر|دفع\s*بطاقة)/i;
  const excluded=/(?:\bOTP\b|\bverification\s*code\b|\bone.time\s*passcode\b|\brefund\b|\breversal\b|\breversed\b|\bcancelled\b|استرجاع|استرداد|إلغاء|الغاء|عكس\s*عملية|رمز\s*(?:التحقق|التأكيد|التفعيل|الدخول))/i;
  const demo='POS Purchase\nBy:3958;mada-Apple Pay\nPay Amount: SAR 8.70\nAt:BOQSHA 29/10/26 22:29';
+ // Separate, local-only review queue; never part of financial hydration or sync.
+ const INBOX_KEY='masareefi_sms_review_v1';
+ function readInbox(){
+  const value=JSON.parse(localStorage.getItem(INBOX_KEY)||'[]');
+  if(!Array.isArray(value)||value.some(x=>!x||typeof x.raw!=='string'||typeof x.id!=='string'))throw Error('تعذر قراءة الوارد؛ لم نغيّر محتواه.');
+  return value;
+ }
+ function addInbox(raw){
+  const rows=readInbox(),identity=window.masareefiSmsIdentity(raw);
+  if(rows.some(x=>window.masareefiSmsIdentity(x.raw).source===identity.source))return 'pending';
+  if(isSaved(raw))return 'saved';
+  if(rows.length>=100)throw Error('الوارد ممتلئ (100 رسالة). راجع الرسائل واحذف ما انتهيت منه أولًا.');
+  rows.push({id:crypto.randomUUID(),raw,received:new Date().toISOString()});
+  localStorage.setItem(INBOX_KEY,JSON.stringify(rows));updateInboxCount();return 'added';
+ }
+ function isSaved(raw){
+  const identity=window.masareefiSmsIdentity(raw);
+  return data.transactions.some(t=>t.smartPasteSource===identity.source||t.smartPasteSource===identity.legacy);
+ }
+ function updateInboxCount(){
+  const button=el('smsInboxOpen');if(!button)return;
+  try{button.textContent='📩 وارد الرسائل للمراجعة ('+readInbox().filter(x=>!isSaved(x.raw)).length+')'}catch(e){button.textContent='📩 وارد الرسائل — تعذرت القراءة'}
+ }
+ function reviewMessage(msg){
+  const dialog=el('smartPasteDialog'),raw=el('smartPasteRaw');
+  if(dialog.open&&raw.value.trim()){alert('توجد رسالة قيد المراجعة؛ الرسالة الأخرى محفوظة في الوارد.');return}
+  closeModal();el('smartPasteHomeOpen')?.click();
+  if(!dialog.open)dialog.showModal();raw.value=msg;el('smartPasteAnalyze')?.click();
+ }
+ function showInbox(){
+  let rows;try{rows=readInbox()}catch(e){alert(e.message);return}
+  openModal('وارد الرسائل — تجربة',
+   '<p>الرسائل محفوظة محليًا في هذا المتصفح، وليست ضمن المزامنة أو النسخة المالية. تحتوي نص الرسالة الأصلي؛ احذفها بعد المراجعة. لا تؤثر على الرصيد قبل تأكيد الحفظ.</p>'+
+   (rows.length?rows.map(x=>'<div class="card" style="margin:12px 0"><pre dir="auto" style="white-space:pre-wrap;overflow-wrap:anywhere">'+safe(x.raw)+'</pre><p>'+(isSaved(x.raw)?'✓ محفوظة سابقًا':'بانتظار المراجعة')+'</p><button class="btn" type="button" data-inbox-review="'+safe(x.id)+'" '+(isSaved(x.raw)?'disabled':'')+'>مراجعة</button> <button class="btn secondary" type="button" data-inbox-delete="'+safe(x.id)+'">حذف من الوارد</button></div>').join(''):'<p>الوارد فارغ. ابدأ برسالة الاختبار من دليل الاختصارات.</p>'));
+ }
+ el('smsInboxOpen')?.addEventListener('click',showInbox);
+ document.addEventListener('click',e=>{
+  const review=e.target.closest('[data-inbox-review]'),remove=e.target.closest('[data-inbox-delete]');if(!review&&!remove)return;
+  try{
+   const rows=readInbox(),id=review?review.dataset.inboxReview:remove.dataset.inboxDelete,item=rows.find(x=>x.id===id);if(!item)return;
+   if(review){if(isSaved(item.raw)){showInbox();return}reviewMessage(item.raw)}
+   else if(confirm('حذف هذه الرسالة من الوارد فقط؟ لن تُحذف أي عملية مالية.')){localStorage.setItem(INBOX_KEY,JSON.stringify(rows.filter(x=>x.id!==id)));updateInboxCount();showInbox()}
+  }catch(error){alert(error.message)}
+ });
+ window.addEventListener('storage',e=>{if(e.key===INBOX_KEY)updateInboxCount()});
+ el('smartPasteDialog')?.addEventListener('close',updateInboxCount);
+ updateInboxCount();
  function receive(){
   const hash=location.hash||'';
   if(!hash.startsWith(PREFIX))return;
@@ -2327,36 +2378,23 @@ function entryKeyLogicV13(current,key){
   if(msg.length<9||msg.length>2200){alert('طول الرسالة غير مناسب؛ ألصقها يدويًا.');return}
   if(excluded.test(msg)){alert('هذه رسالة رمز تحقق أو إلغاء أو استرجاع؛ لن نجهزها كمصروف.');return}
   if(!spends.test(msg)){alert('الرسالة لا تبدو إشعار خصم أو شراء؛ لم تُضف أي عملية.');return}
-  const d=el('smartPasteDialog'),raw=el('smartPasteRaw'),stat=el('smartPasteStatus');
-  if(!d||!raw||!stat)return;
-  if(d.open&&raw.value.trim()){alert('توجد رسالة قيد المراجعة؛ لم نستبدلها.');return}
-  el('smartPasteHomeOpen')?.click();
-  if(!d.open&&typeof d.showModal==='function')d.showModal();
-  raw.value=msg;
-  el('smartPasteAnalyze')?.click();
-  const amount=Number(el('smartPasteAmount')?.value||0);
-  if(el('smartPasteType')?.value!=='expense'){stat.textContent='نوع الرسالة غير واضح. راجع النوع والمبلغ قبل الحفظ.';return}
-  if(!Number.isFinite(amount)||amount<=0){stat.textContent='لم يتم استخراج المبلغ بثقة؛ راجعه وأدخله يدويًا.';return}
-  const sel=el('smartPasteCategory');
-  const name=String(el('smartPasteDescription')?.value||'').trim().toLocaleLowerCase();
-  const opts=[...sel.options].map(o=>o.value);
-  const old=(data.transactions||[]).find(t=>t.type==='expense'&&name&&String(t.note||'').trim().toLocaleLowerCase()===name&&opts.includes(t.category));
-  if(old)sel.value=old.category;
-  else{
-   if(!opts.includes(''))sel.add(new Option('اختر التصنيف',''),0);
-   sel.value='';
-  }
-  stat.textContent=old?'رسالة من اختصار الآيفون. تعرّفنا على تصنيف متجر سابق؛ راجع المعلومات ثم أكّد الحفظ.':'رسالة من اختصار الآيفون. اختر التصنيف وراجع المبلغ والمتجر والتاريخ، ثم أكّد الحفظ. لن تُحفظ العملية تلقائيًا.';
+  try{
+   const result=addInbox(msg);
+   if(result==='saved'){alert('هذه الرسالة محفوظة سابقًا؛ لم نضف نسخة أخرى.');return}
+   if(document.querySelector('dialog[open]')){alert('وصلت رسالة إلى الوارد؛ يمكنك متابعة عملك الحالي ثم فتح الوارد من الإعدادات.');return}
+   showInbox();
+  }catch(e){alert('لم تُحفظ الرسالة في الوارد: '+e.message+' يمكنك لصقها يدويًا.')}
+
  }
  const help=el('shortcutHelpV16');
  if(help)help.addEventListener('click',function(){
   const body='<div class="bank-shortcut-guide-v16">'+
-   '<p>يسمح اختصار الآيفون بقراءة رسالة الخصم عند وصولها وفتح مصاريفي <b>للمراجعة قبل الحفظ</b>.</p>'+
+   '<p>يسمح اختصار الآيفون بقراءة رسالة الخصم عند وصولها وفتح مصاريفي لإضافتها إلى <b>وارد الرسائل للمراجعة قبل الحفظ</b>. هذه تجربة تحتاج فتح صفحة التطبيق وليست استقبالًا صامتًا أثناء إغلاقه.</p>'+
    '<ol><li>افتح <b>الاختصارات ← الأتمتة ← + ← رسالة</b>، واختر مرسل البنك أو شرط <code>POS Purchase</code> أو <code>شراء</code>.</li>'+
    '<li>اختر <b>تشغيل فورًا</b>، ثم أضف إجراء <b>ترميز URL (URL Encode)</b> واستخدم متغير <b>إدخال الاختصار ← محتوى الرسالة</b>.</li>'+
    '<li>أضف إجراء <b>نص (Text)</b>: ألصق الرابط أدناه ثم أضف المتغير <b>النص المرمّز</b> مباشرة بعد علامة =.</li>'+
    '<li>أضف إجراء <b>فتح عناوين URL (Open URLs)</b> واختر نتيجة إجراء النص، ثم احفظ الأتمتة.</li>'+
-   '<li>عند وصول رسالة خصم سيُفتح التحليل؛ قد يتطلب ذلك فتح قفل الآيفون أو التفاعل مع إشعار.</li></ol>'+
+   '<li>عند وصول رسالة خصم ستضاف إلى الوارد؛ قد يتطلب ذلك فتح قفل الآيفون أو التفاعل مع إشعار.</li></ol>'+
    '<label for="bankShortcutBaseV16">الرابط الأساسي للنسخ</label>'+
    '<input id="bankShortcutBaseV16" type="text" dir="ltr" readonly value="'+BASE+'">'+
    '<div class="actions"><button class="btn" id="bankShortcutCopyV16" type="button">نسخ الرابط</button><button class="btn secondary" id="bankShortcutTestV16" type="button">تجربة رسالة وهمية</button></div>'+
@@ -2370,7 +2408,7 @@ function entryKeyLogicV13(current,key){
     closeModal();
     location.hash=PREFIX.slice(1)+encodeURIComponent(demo);
     receive();
-    if(el('smartPasteStatus'))el('smartPasteStatus').textContent='رسالة اختبار وهمية بقيمة 8.70 ر.س. راجع المعلومات، ولا تحفظها إلا إذا أردت تسجيل عملية تجريبية.';
+    alert('هذه رسالة اختبار وهمية. جرّب المراجعة ثم أغلقها دون حفظ العملية المالية.');
    };
   });
  });
