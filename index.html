@@ -409,7 +409,7 @@ body.entry-v13-open{overflow:hidden}
  <div class="card" id="recurringList"></div>
  <div class="notice">يُسجّل الدخل المتكرر في تاريخ استحقاقه عند فتح التطبيق في ذلك اليوم أو بعده. لن تُنشأ العملية مرتين للشهر نفسه.</div>
 </section>
-<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار الرسمي 26 · 4 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في الإصدار 26؟</summary><p>أيقونات حسب تصنيف المصروف، ورمز نصي للبيك عند ظهور EXPRESS F في رسالة البنك.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
+<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار الرسمي 27 · 4 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في الإصدار 27؟</summary><p>اختيار التصنيف بطريقة مرئية مثل وفير: أيقونات كبيرة، الأكثر استخدامًا أولًا، وبحث سريع بدل القائمة الطويلة.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
 <button class="settingsitem" id="themeColors">لون التطبيق <span>‹</span></button><button class="settingsitem" id="paydaySettings" type="button">موعد الراتب ودورة الميزانية <span id="paydaySettingSummary">يوم 27 · تعديل</span></button>
 <button class="settingsitem" id="smartPasteSettingsOpen" type="button">📋 لصق الرسائل البنكية الذكي <span>‹</span></button><button class="settingsitem" id="shortcutHelpV16" type="button">📩 ربط رسائل البنك باختصارات الآيفون <span>‹</span></button>
 <button class="settingsitem" data-go="incomeLedger">سجل الدخل والراتب المتكرر <span>‹</span></button><button class="settingsitem" data-go="receipts">أرشيف الفواتير <span>‹</span></button><button class="settingsitem" data-go="backup">النسخ الاحتياطي اليدوي <span>‹</span></button><button class="settingsitem" id="financeSyncSettingsV19" type="button">☁ المزامنة المالية بين الأجهزة <span>‹</span></button><div id="syncConnectionSummaryV20" class="sync-summary-v20" role="status" aria-live="polite">جارٍ فحص حالة المزامنة...</div><button class="settingsitem" data-go="budget">الميزانية <span>‹</span></button><button class="settingsitem" data-go="debts">الأقساط والديون <span>‹</span></button><button class="settingsitem" data-go="goals">الأهداف الادخارية <span>‹</span></button><button class="settingsitem" data-go="reports">التقارير <span>‹</span></button></div><div class="notice">البيانات محفوظة في هذا المتصفح. أنشئ نسخة JSON في Google Drive أو iCloud Drive يدويًا بانتظام. يمكن تفعيل المزامنة المالية المشفرة من الإعدادات؛ تعمل أثناء فتح التطبيق وبعد تسجيل الدخول.</div></section>
@@ -885,6 +885,25 @@ function categoryIconSvg(label){
  else if(/فواتير|رسوم حكومية/.test(x))k="receipt";
  return '<svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+categorySvgPaths[k]+'</svg>';
 }
+function openCategoryPicker(select){
+ const values=[...select.options].map(o=>o.value).filter(Boolean),selected=select.value;
+ const counts=new Map(values.map(v=>[v,0]));
+ data.transactions.forEach(t=>{if(counts.has(t.category))counts.set(t.category,counts.get(t.category)+1)});
+ const ordered=[...values].sort((a,b)=>(counts.get(b)-counts.get(a))||a.localeCompare(b,'ar'));
+ const layer=document.createElement('div');layer.className='category-picker-layer';
+ layer.innerHTML='<div class="category-picker-card" role="dialog" aria-label="اختيار التصنيف"><button type="button" class="category-picker-close" aria-label="إغلاق">×</button><h3>اختيار التصنيف</h3><input class="category-picker-search" placeholder="ابحث عن تصنيف" aria-label="بحث في التصنيفات"><div class="category-picker-grid">'+ordered.map(v=>'<button type="button" class="category-picker-choice '+(v===selected?'selected':'')+'" data-category-value="'+safe(v)+'"><span>'+categoryIconSvg(v.split(' / ').pop())+'</span><span>'+safe(v.replace(' / ',' › '))+'</span><small>'+(counts.get(v)?counts.get(v)+' عملية':'')+'</small></button>').join('')+'</div></div>';
+ document.body.append(layer);
+ const close=()=>layer.remove();layer.querySelector('.category-picker-close').onclick=close;layer.addEventListener('click',e=>{if(e.target===layer)close()});
+ const search=layer.querySelector('.category-picker-search');search.oninput=()=>{const q=search.value.trim().toLocaleLowerCase('ar');layer.querySelectorAll('[data-category-value]').forEach(b=>b.hidden=!b.dataset.categoryValue.toLocaleLowerCase('ar').includes(q))};
+ layer.querySelectorAll('[data-category-value]').forEach(b=>b.onclick=()=>{select.value=b.dataset.categoryValue;select.dispatchEvent(new Event('change',{bubbles:true}));close()});
+ search.focus();
+}
+function decorateCategorySelect(select){
+ if(!select||select._categoryPickerButton)return;
+ const button=document.createElement('button');button.type='button';button.className='category-picker-trigger';
+ const sync=()=>{button.innerHTML='<span>'+categoryIconSvg(select.value.split(' / ').pop())+'</span><b>'+safe(select.value||'اختر التصنيف')+'</b><span class="category-picker-chevron">⌄</span>'};
+ select.hidden=true;select.before(button);button.onclick=()=>openCategoryPicker(select);select.addEventListener('change',sync);select._categoryPickerButton=button;sync();
+}
 
 
 /* v8: Keep the initial v7 visual order, then respect each user's own saved order. */
@@ -1082,13 +1101,14 @@ function editTransaction(which){
    <div class="actions tx-edit-actions"><button class="btn" type="submit">حفظ التعديل</button>${t.type==='expense'?'<button class="btn secondary" type="button" data-receipt-open="'+safe(t.id)+'">📎 الفاتورة والضمان</button>':''}<button type="button" class="btn danger" id="editTxDelete">🗑 حذف العملية</button></div>
   </form>`);
  const form=el('editTxForm');
+ decorateCategorySelect(form.elements.category);
  if(form.elements.merchantLogoV17)form.elements.merchantLogoV17.onchange=()=>{
    if(form.elements.rememberLogoV17)form.elements.rememberLogoV17.checked=true;
  };
  form.elements.type.onchange=()=>{
    const kinds=catOptions(form.elements.type.value);
    if(!kinds.includes(form.elements.category.value))kinds.unshift(form.elements.category.value);
-   refreshSelect(form.elements.category,kinds)
+   refreshSelect(form.elements.category,kinds);form.elements.category.dispatchEvent(new Event('change'))
  };
  form.onsubmit=e=>{
   e.preventDefault();
@@ -1659,6 +1679,12 @@ body:has(select:focus) #entryLauncher { display:none!important; }
 .smart-form-row{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 .smart-paste-status{font-size:12px;background:#f0f8ee;color:#355a3a;padding:10px;border-radius:10px;line-height:1.7}
 .smart-paste-batch-results{display:grid;gap:10px;margin-top:12px}
+.category-picker-layer{position:fixed;inset:0;z-index:1000;background:#0007;display:flex;align-items:flex-end;justify-content:center;padding:16px}
+.category-picker-card{width:min(100%,560px);max-height:min(88dvh,760px);overflow:auto;background:#fff;border-radius:30px 30px 18px 18px;padding:22px;color:#554f52;box-shadow:0 20px 60px #0005;position:relative}
+.category-picker-card h3{margin:0 0 14px;text-align:center;font-size:24px}.category-picker-close{position:absolute;left:18px;top:14px;border:0;background:#f3f4f5;border-radius:50%;width:38px;height:38px;font-size:26px;color:#999}
+.category-picker-search{width:100%;box-sizing:border-box;border:1px solid #ddd;border-radius:15px;padding:12px 15px;font:inherit;font-size:17px;margin-bottom:14px}
+.category-picker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.category-picker-choice{min-height:106px;border:2px solid transparent;border-radius:20px;background:#fafafa;color:#514b4d;font:inherit;font-weight:800;padding:12px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}.category-picker-choice.selected{border-color:#55bc45;background:#f0faed}.category-picker-choice svg{width:36px;height:36px;color:#55bc45}.category-picker-choice small{font-size:11px;color:#999;font-weight:500}.category-picker-choice[hidden]{display:none}
+.category-picker-trigger{width:100%;min-height:52px;border:1px solid #d2dfd3;border-radius:12px;background:#fff;color:#1d3327;font:inherit;padding:9px 13px;display:flex;align-items:center;gap:10px;text-align:right}.category-picker-trigger>span:first-child{display:flex;width:30px;color:#55bc45}.category-picker-trigger svg{width:27px;height:27px}.category-picker-trigger b{flex:1}.category-picker-chevron{font-size:25px;color:#888}
 .smart-paste-dialog [hidden]{display:none!important}
 .smart-paste-batch-card{border:1px solid #d2dfd3;border-radius:14px;padding:10px;background:#fbfdfb}
 .smart-paste-batch-card.is-invalid{border-color:#e6b4a9;background:#fff9f7}
@@ -1786,7 +1812,8 @@ function categories(){
  const select=e('smartPasteCategory'),previous=select.value;
  select.replaceChildren(...opts.map(name=>new Option(name,name)));
  if(opts.includes(previous))select.value=previous;
- simplifyCategorySelect(select);
+ decorateCategorySelect(select);
+ select.dispatchEvent(new Event('change'));
 }
 function guessCategory(text,type){
  const groups=type==='income'?[['راتب','salary'],['عمل إضافي','freelance']]:[
@@ -1849,7 +1876,7 @@ function renderBatch(items){
   <label>الوصف<input data-batch-note maxlength="160" value="${safe(item.note)}"></label>
  </div>`).join('')+`<button type="button" class="btn smart-paste-batch-save" id="smartPasteBatchSave">تأكيد وحفظ المحدد</button>`;
  batchResults.hidden=false;
- batchResults.querySelectorAll('[data-batch-category]').forEach(simplifyCategorySelect);
+ batchResults.querySelectorAll('[data-batch-category]').forEach(decorateCategorySelect);
  batchResults.querySelectorAll('[data-batch-type]').forEach(select=>select.addEventListener('change',()=>{
   const card=select.closest('[data-batch-index]'),category=card.querySelector('[data-batch-category]'),previous=category.value;
   category.innerHTML=batchOptionValues(select.value,previous);
