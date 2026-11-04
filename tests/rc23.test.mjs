@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 27/);
+ assert.match(app,/الإصدار الرسمي 28/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v27-20261104/);
+ assert.match(worker,/masareefi-official-shell-v28-20261104/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -206,4 +206,47 @@ test('a restored backup stays quarantined after page reload and login',async()=>
   'person@example.test','test-password','long-test-encryption-phrase');
  assert.equal(second.getState().active,false);
  assert.match(second.getNotice(),/المزامنة التلقائية معلّقة/);
+});
+
+test('custom merchant images normalize names, restore from backup, and release replaced URLs',async()=>{
+ const functions=['conciseMerchant','merchantLogoKeyV17'].map(name=>app.match(new RegExp('function '+name+'\\([^]*?\\n\\}'))[0]).join('\n');
+ const records=[{id:'merchant-image:boqsha',txId:'merchant-image:boqsha',name:'Boqsha',type:'image/png',size:3,blob:new Blob(['png'],{type:'image/png'})},{id:'invoice',txId:'transaction',type:'image/png',blob:new Blob(['receipt'])}];
+ const revoked=[];let serial=0,renders=0;
+ const context=vm.createContext({window:{},allFiles:async()=>records,render:()=>renders++,URL:{createObjectURL:()=>`blob:test-${++serial}`,revokeObjectURL:url=>revoked.push(url)}});
+ const core=app.slice(app.indexOf("const MERCHANT_IMAGE_PREFIX="),app.indexOf('async function prepareMerchantImage'));
+ vm.runInContext(functions+'\n'+core,context);
+ await vm.runInContext('refreshMerchantImages()',context);
+ assert.equal(context.window.masareefiMerchantImages.get(' BOQSHA '),'blob:test-1');
+ assert.equal(context.window.masareefiMerchantImages.get('Different Store'),undefined);
+ assert.equal(vm.runInContext("merchantImageKey('بُقشة')===merchantImageKey('بقشة')",context),true);
+ // Round-trip the actual complete-backup format, including image id and txId.
+ context.toB64=async blob=>Buffer.from(await blob.arrayBuffer()).toString('base64');context.data={transactions:[]};
+ vm.runInContext(app.match(/async function backupWithFiles\(\)\{[^]*?\n\}/)[0],context);
+ const backup=JSON.parse(await vm.runInContext('backupWithFiles()',context));
+ assert.equal(backup._receiptBackup.attachments[0].txId,'merchant-image:boqsha');
+ records.splice(0,records.length,...backup._receiptBackup.attachments.map(x=>({...x,blob:new Blob([Buffer.from(x.base64,'base64')],{type:x.type})})));
+ await vm.runInContext('refreshMerchantImages()',context);
+ assert.equal(context.window.masareefiMerchantImages.get('Boqsha'),'blob:test-2');
+ assert.deepEqual(revoked,['blob:test-1']);
+ records.splice(0,1);await vm.runInContext('refreshMerchantImages()',context);
+ assert.equal(context.window.masareefiMerchantImages.get('Boqsha'),undefined);
+ assert.equal(renders,3);
+ assert.deepEqual(revoked,['blob:test-1','blob:test-2']);
+});
+
+test('uploaded logos take precedence without changing financial transactions',()=>{
+ const resolve=app.match(/function resolveMerchantLogoV17\(t\)\{[^]*?\n\}/)[0];
+ const context=vm.createContext({window:{masareefiMerchantImages:{get:()=> 'blob:custom'}}});vm.runInContext(resolve,context);
+ const tx={type:'expense',note:'Boqsha',amount:81,merchantLogoV17:'none'};context.tx=tx;
+ assert.equal(vm.runInContext('resolveMerchantLogoV17(tx).customImage',context),'blob:custom');
+ assert.equal(vm.runInContext("resolveMerchantLogoV17({type:'income'})",context),null);
+ assert.deepEqual(tx,{type:'expense',note:'Boqsha',amount:81,merchantLogoV17:'none'});
+});
+
+test('merchant image upload rejects unsupported and oversized input before decoding',async()=>{
+ const prepare=app.match(/async function prepareMerchantImage\(file\)\{[^]*?\n\}/)[0];
+ const context=vm.createContext({MAX_FILE:8*1024*1024});vm.runInContext(prepare,context);
+ await assert.rejects(vm.runInContext("prepareMerchantImage({type:'image/svg+xml',size:10})",context),/PNG/);
+ await assert.rejects(vm.runInContext("prepareMerchantImage({type:'image/png',size:9*1024*1024})",context),/8/);
+ await assert.rejects(vm.runInContext("prepareMerchantImage({type:'image/png',size:0})",context),/8/);
 });

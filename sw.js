@@ -1,9 +1,9 @@
-/* Masareefi official v24 service worker.
+/* Masareefi official v28 service worker.
  * Network-first app shell prevents stale app versions. Logo assets cache offline.
  * Never reads or caches bank messages, financial records, or personal merchant data.
  */
 'use strict';
-const SHELL_CACHE='masareefi-official-shell-v27-20261104';
+const SHELL_CACHE='masareefi-official-shell-v28-20261104';
 const LOGO_CACHE='masareefi-official-logos-v24-20261102';
 const OLD_PREFIXES=['masareefi-official-shell-','masareefi-official-logos-','masareefi-official-v2-shell-','masareefi-shell-'];
 const OFFICIAL_EJAR='https://www.ejar.sa/sites/default/files/EjarLogo_10.png';
