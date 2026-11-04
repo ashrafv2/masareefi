@@ -73,14 +73,14 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 28/);
+ assert.match(app,/الإصدار التجريبي 29/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
  assert.ok(app.includes("const KEY='"+localKey+"'"));
  assert.match(cloud,/masareefi_finance_sync_v19_official/);
  assert.match(vault,/masareefi_v22_device_vault_official/);
- assert.match(app,/https:\/\/ashrafv2\.github\.io\/masareefi\//);
+ assert.match(app,/location\.origin\+location\.pathname\+PREFIX/);
  assert.match(rules,/request\.auth\.uid == userId/);
  assert.match(rules,/allow list, delete: if false;/);
 });
@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v28-20261104/);
+ assert.match(worker,/masareefi-official-shell-v29-trial-20261104/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -249,4 +249,25 @@ test('merchant image upload rejects unsupported and oversized input before decod
  await assert.rejects(vm.runInContext("prepareMerchantImage({type:'image/svg+xml',size:10})",context),/PNG/);
  await assert.rejects(vm.runInContext("prepareMerchantImage({type:'image/png',size:9*1024*1024})",context),/8/);
  await assert.rejects(vm.runInContext("prepareMerchantImage({type:'image/png',size:0})",context),/8/);
+});
+
+test('shortcut inbox preserves financial data, detects duplicates including time, and survives reload',()=>{
+ const memory=new Map(),transactions=[];
+ const context=vm.createContext({window:{},localStorage:{getItem:k=>memory.get(k),setItem:(k,v)=>memory.set(k,v)},crypto:webcrypto,data:{transactions},el:()=>null});
+ for(const name of ['normalize','smsFingerprintV16'])vm.runInContext(app.match(new RegExp('function '+name+'\\([^]*?\\n\\}'))[0],context);
+ vm.runInContext(app.match(/window.masareefiSmsIdentity=function\(raw\)\{[^]*?\n\};/)[0],context);
+ vm.runInContext(app.slice(app.indexOf(" const INBOX_KEY="),app.indexOf(' function reviewMessage(msg)')),context);
+ context.raw='PoS Purchase\nAmount: SAR 5\nAt:Example\n4/11/26 12:00';
+ assert.equal(vm.runInContext('addInbox(raw)',context),'added');
+ assert.equal(vm.runInContext('addInbox(raw.replace(/\\n/g,"  "))',context),'pending');
+ assert.equal(vm.runInContext('addInbox(raw.replace("12:00","12:01"))',context),'added');
+ assert.equal(vm.runInContext('readInbox().length',context),2);
+ assert.equal(transactions.length,0);
+ assert.deepEqual([...memory.keys()],['masareefi_sms_review_v1']);
+ transactions.push({smartPasteSource:context.window.masareefiSmsIdentity(context.raw+' later').source});
+ context.raw+=' later';assert.equal(vm.runInContext('addInbox(raw)',context),'saved');
+ memory.set('masareefi_sms_review_v1','broken');
+ assert.throws(()=>vm.runInContext('addInbox(raw)',context));assert.equal(memory.get('masareefi_sms_review_v1'),'broken');
+ memory.set('masareefi_sms_review_v1',JSON.stringify(Array.from({length:100},(_,i)=>({id:String(i),raw:String(i)}))));
+ assert.throws(()=>vm.runInContext('addInbox("a different message")',context),/100/);
 });
