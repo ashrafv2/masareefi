@@ -1788,13 +1788,21 @@ function guessCategory(text,type){
  for(const words of groups){if(words.some(w=>text.toLowerCase().includes(w.toLowerCase()))){const candidate=opts.find(o=>o.includes(words[0])||words.some(w=>o.toLowerCase().includes(w.toLowerCase())));if(candidate)return candidate}}
  return opts[0]||'';
 }
+function rememberedMerchantCategory(merchant,type,options,transactions){
+ const key=value=>String(value||'').normalize('NFKC').replace(/[\u200e\u200f\u061c]/g,'').trim().replace(/\s+/g,' ').toLowerCase();
+ const target=key(merchant);
+ if(!target||target===key('عملية بنكية'))return '';
+ // Transactions are prepended on save. Use the latest saved matching merchant.
+ const previous=transactions.find(t=>t.type===type&&key(t.note)===target&&options.includes(t.category));
+ return previous?previous.category:'';
+}
 function parseMessage(message){
  const txt=normalize(message).replace(/\s+/g,' ').trim();
  const isOutgoing=/(?:شراء|نقاط\s*بيع|خصم|سحب|حوالة\s*صادرة|تحويل\s*صادر|مدين|paid|purchase|debit)/i.test(txt);
  const isIncoming=/(?:راتب|إيداع|حوالة\s*واردة|تحويل\s*وارد|دائن|received|credited|salary|deposit)/i.test(txt);
  const type=isIncoming&&!isOutgoing?'income':'expense';
  const amount=findAmount(txt),date=findDate(txt)||today(),merchant=findMerchant(message);
- const options=catOptions(type)||[],guessed=guessCategory(txt,type);
+ const options=catOptions(type)||[],guessed=rememberedMerchantCategory(merchant,type,options,data.transactions)||guessCategory(txt,type);
  return {message,type,amount,date,category:options.includes(guessed)?guessed:(options[0]||''),note:merchant||'عملية بنكية',sourceKey:'sms-v1:'+smsFingerprintV16(txt.replace(/\s+/g,' ').toLowerCase())};
 }
 function splitMessages(value){
