@@ -27,6 +27,12 @@ test('merchant suggestions reuse saved categories without crossing types or remo
  assert.equal(recall('عملية بنكية','expense',options,[{note:'عملية بنكية',type:'expense',category:'بقالة'}]),'');
  assert.equal(recall('Mobily','expense',options,[{note:'Mobily',type:'expense',category:'فواتير'},...records]),'فواتير');
 });
+test('category picker orders by usage and supports search selection',()=>{
+ assert.match(app,/function openCategoryPicker\(select\)/);
+ assert.match(app,/category-picker-grid/);
+ assert.match(app,/counts\.get\(b\)-counts\.get\(a\)/);
+ assert.match(app,/function decorateCategorySelect\(select\)/);
+});
 
 function merchantParser(){
  const normalize=app.match(/function normalize\(str\)\{[\s\S]*?\n\}/)?.[0];
@@ -67,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 26/);
+ assert.match(app,/الإصدار الرسمي 27/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -101,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v26-20261104/);
+ assert.match(worker,/masareefi-official-shell-v27-20261104/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
