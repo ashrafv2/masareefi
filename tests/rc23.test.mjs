@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 28/);
+ assert.match(app,/الإصدار الرسمي 29/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v28-20261104/);
+ assert.match(worker,/masareefi-official-shell-v29-20261105/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -249,4 +249,33 @@ test('merchant image upload rejects unsupported and oversized input before decod
  await assert.rejects(vm.runInContext("prepareMerchantImage({type:'image/svg+xml',size:10})",context),/PNG/);
  await assert.rejects(vm.runInContext("prepareMerchantImage({type:'image/png',size:9*1024*1024})",context),/8/);
  await assert.rejects(vm.runInContext("prepareMerchantImage({type:'image/png',size:0})",context),/8/);
+});
+
+test('category picker opens as modal above its owner and cleans up without changing other form data',()=>{
+ const source=app.match(/function openCategoryPicker\(select\)\{[^]*?\n\}/)[0];
+ class Node extends EventTarget{
+  constructor(){super();this.isConnected=true;this.open=false;this.dataset={}}
+  focus(){this.focused=true}
+  remove(){this.isConnected=false}
+  showModal(){this.open=true;this.modal=true}
+  close(){this.open=false;this.dispatchEvent(new Event('close'))}
+  setAttribute(){}
+ }
+ const owner=new Node();owner.open=true;
+ const trigger=new Node(),search=new Node(),dismiss=new Node(),choice=new Node();choice.dataset.categoryValue='مطاعم';
+ const select=new Node();select.options=[{value:'بقالة'},{value:'مطاعم'}];select.value='بقالة';select._categoryPickerButton=trigger;select.closest=()=>owner;
+ let layer,created=0,observer,changes=0;
+ select.addEventListener('change',()=>changes++);
+ const doc={body:{append(){}},querySelector:()=>layer?.isConnected?layer:null,createElement:tag=>{
+  assert.equal(tag,'dialog');created++;layer=new Node();layer.querySelector=s=>s.includes('search')?search:dismiss;layer.querySelectorAll=()=>[choice];return layer;
+ }};
+ const context=vm.createContext({document:doc,select,data:{transactions:[]},safe:x=>x,categoryIconSvg:()=>'',Event,MutationObserver:class{constructor(cb){this.callback=cb;observer=this}observe(){}disconnect(){this.disconnected=true}}});
+ vm.runInContext(source,context);
+ vm.runInContext('openCategoryPicker(select)',context);
+ assert.equal(layer.modal,true);assert.equal(owner.open,true);
+ vm.runInContext('openCategoryPicker(select)',context);assert.equal(created,1);
+ choice.onclick();assert.equal(select.value,'مطاعم');assert.equal(changes,1);assert.equal(owner.open,true);assert.equal(layer.isConnected,false);assert.equal(trigger.focused,true);
+ vm.runInContext('openCategoryPicker(select)',context);layer.dispatchEvent(new Event('cancel',{cancelable:true}));assert.equal(layer.isConnected,false);assert.equal(changes,1);
+ vm.runInContext('openCategoryPicker(select)',context);owner.close();assert.equal(layer.isConnected,false);assert.equal(observer.disconnected,true);
+ owner.open=true;vm.runInContext('openCategoryPicker(select)',context);select.isConnected=false;observer.callback();assert.equal(layer.isConnected,false);
 });
