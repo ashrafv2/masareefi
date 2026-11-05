@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 29/);
+ assert.match(app,/الإصدار الرسمي 30/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v29-20261105/);
+ assert.match(worker,/masareefi-official-shell-v30-20261105/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -273,7 +273,8 @@ test('category picker opens as modal above its owner and cleans up without chang
  vm.runInContext(source,context);
  vm.runInContext('openCategoryPicker(select)',context);
  assert.equal(layer.modal,true);assert.equal(owner.open,true);
- vm.runInContext('openCategoryPicker(select)',context);assert.equal(created,1);
+ assert.equal(search.focused,undefined);assert.equal(dismiss.focused,true);
+ vm.runInContext('openCategoryPicker(select)',context);assert.equal(created,1);assert.equal(search.focused,undefined);
  choice.onclick();assert.equal(select.value,'مطاعم');assert.equal(changes,1);assert.equal(owner.open,true);assert.equal(layer.isConnected,false);assert.equal(trigger.focused,true);
  vm.runInContext('openCategoryPicker(select)',context);layer.dispatchEvent(new Event('cancel',{cancelable:true}));assert.equal(layer.isConnected,false);assert.equal(changes,1);
  vm.runInContext('openCategoryPicker(select)',context);owner.close();assert.equal(layer.isConnected,false);assert.equal(observer.disconnected,true);
