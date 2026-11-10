@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v31-20261110/);
+ assert.match(worker,/masareefi-official-shell-v31-20261110-r1/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -135,6 +135,25 @@ test('asset purchase excludes living expenses and routes funding to savings or a
  assert.match(app,/data\.debts\.push\(\{id:debtId,name:'تمويل '\+name,total:cost,remaining:cost/);
  assert.match(app,/incomeAssetId:asset\.id/);
  assert.match(app,/if\(asset\.active===false\)\{alert\('أعد تفعيل الأصل قبل تسجيل عمليات جديدة'\)/);
+});
+test('the asset form saves a valid purchase date and deducts the purchase once',()=>{
+ const source=app.slice(app.indexOf('function createIncomeAsset(){'),app.indexOf('function renderIncomeAssets(){'));
+ const data={savingAccounts:[{id:'bank',name:'Bank'}],savings:[],debts:[],incomeAssets:[],transactions:[]};
+ const form={elements:{funding:{value:'bank'},name:{value:'Car'},cost:{value:'12000'},date:{value:'2026-11-10'}}};
+ let saves=0;
+ const context={data,el:()=>form,openModal:(_title,_body,setup)=>setup(),
+  safe:String,money:String,savingAccountTotal:()=>15000,requireAmount:value=>value>0,
+  today:()=>form.elements.date.value,id:()=>String(data.savings.length+1),
+  alert:message=>assert.fail(message),closeModal:()=>{},persist:()=>{saves++}};
+ vm.runInNewContext(source+';createIncomeAsset()',context);
+ form.onsubmit({preventDefault(){}});
+ assert.equal(saves,1);
+ assert.equal(data.incomeAssets[0].purchaseDate,'2026-11-10');
+ assert.equal(data.savings.length,1);
+ assert.equal(data.savings[0].amount,12000);
+ assert.equal(data.savings[0].account,'bank');
+ assert.equal(data.savings[0].assetId,data.incomeAssets[0].id);
+ assert.equal(data.transactions.length,0);
 });
 test('AlAhli POS SMS extracts merchant after the Arabic "من" marker',()=>{
  const findMerchant=merchantParser();
