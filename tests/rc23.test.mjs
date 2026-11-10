@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار التجريبي 31/);
+ assert.match(app,/الإصدار الرسمي 31/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
