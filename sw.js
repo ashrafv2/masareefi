@@ -1,4 +1,4 @@
-/* Masareefi official service worker, experimental shell v31.
+/* Masareefi official service worker, official v31.
  * Network-first app shell prevents stale app versions. Logo assets cache offline.
  * Never reads or caches bank messages, financial records, or personal merchant data.
  */
