@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 30/);
+ assert.match(app,/الإصدار التجريبي 31/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -107,9 +107,34 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v30-20261105/);
+ assert.match(worker,/masareefi-official-shell-v31-20261110/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
+});
+test('income assets extend the existing financial object and encrypted cloud nonempty check',()=>{
+ assert.match(app,/incomeAssets:\[\]/);
+ assert.match(app,/\['transactions','goals','debts','savings','receivables','incomeAssets'\]/);
+ assert.match(cloud,/recurringIncome','incomeAssets'/);
+ assert.match(app,/const KEY='masareefi_v2_official'/);
+ assert.match(app,/const DB_NAME='masareefi_v2_receipts_official'/);
+});
+test('income asset return calculations separate purchase price from operations and honor cycle dates',()=>{
+ const source=app.match(/function incomeAssetTotals\(asset,transactions,period\)\{[\s\S]*?\n\}/)?.[0];
+ assert.ok(source,'income asset calculation missing');
+ const totals=new Function('n',source+';return incomeAssetTotals') (v=>Number(v)||0);
+ const result=totals({id:'car',purchaseCost:12000},[
+  {incomeAssetId:'car',type:'income',amount:2000,date:'2026-11-02'},
+  {incomeAssetId:'car',type:'expense',amount:250,date:'2026-11-03'},
+  {incomeAssetId:'other',type:'income',amount:999,date:'2026-11-03'},
+  {incomeAssetId:'car',type:'expense',amount:50,date:'2026-10-26'}
+ ],{start:'2026-10-27',end:'2026-11-27'});
+ assert.deepEqual(result,{income:2000,expense:300,net:1700,periodNet:1750,cost:12000,recovered:1700,remaining:10300,recoveryPct:14});
+});
+test('asset purchase excludes living expenses and routes funding to savings or a debt record',()=>{
+ assert.match(app,/note:'شراء أصل مدر للدخل: '\+name,assetId:asset\.id/);
+ assert.match(app,/data\.debts\.push\(\{id:debtId,name:'تمويل '\+name,total:cost,remaining:cost/);
+ assert.match(app,/incomeAssetId:asset\.id/);
+ assert.match(app,/if\(asset\.active===false\)\{alert\('أعد تفعيل الأصل قبل تسجيل عمليات جديدة'\)/);
 });
 test('AlAhli POS SMS extracts merchant after the Arabic "من" marker',()=>{
  const findMerchant=merchantParser();

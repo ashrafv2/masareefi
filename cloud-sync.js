@@ -323,7 +323,7 @@ function fieldsOf(manifest){
 async function readManifest(){return fieldsOf(await firestore('sync','meta'))}
 async function currentHash(){return digest(stableStringify(data))}
 function nonempty(){
- return ['transactions','savings','receivables','debts','goals','recurringIncome'].some(k=>Array.isArray(data[k])&&data[k].length>0)||
+ return ['transactions','savings','receivables','debts','goals','recurringIncome','incomeAssets'].some(k=>Array.isArray(data[k])&&data[k].length>0)||
   Object.keys(data.budgets||{}).length>0;
 }
 function selectedUI(){
