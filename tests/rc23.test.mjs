@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 31/);
+ assert.match(app,/الإصدار الرسمي 31\.1/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v31-20261110-r1/);
+ assert.match(worker,/masareefi-official-shell-v31-20261110-r2/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -154,6 +154,49 @@ test('the asset form saves a valid purchase date and deducts the purchase once',
  assert.equal(data.savings[0].account,'bank');
  assert.equal(data.savings[0].assetId,data.incomeAssets[0].id);
  assert.equal(data.transactions.length,0);
+});
+test('asset operating costs from savings only post a withdrawal and reduce asset returns',()=>{
+ const start=app.indexOf('function incomeAssetTotals(');
+ const end=app.indexOf('function createIncomeAsset()',start);
+ const asset={id:'car',name:'Car',purchaseCost:12000};
+ const purchase={type:'withdrawal',account:'bank',amount:12000,assetId:'car',date:'2026-11-01'};
+ const data={incomeAssets:[asset],savingAccounts:[{id:'bank',name:'Bank'}],
+  savings:[purchase],transactions:[{type:'income',amount:900,incomeAssetId:'car',date:'2026-11-05'}]};
+ const form={elements:{amount:{value:'600'},category:{value:'صيانة'},date:{value:'2026-11-06'},
+  note:{value:'صيانة السيارة'},savingsAccount:{value:'bank'}}};
+ const notice={};
+ const alerts=[];
+ let saves=0;
+ const context={data,asset,el:key=>key==='assetTxForm'?form:notice,safe:String,money:String,
+  catOptions:()=>['صيانة'],savingAccountTotal:()=>12500-data.savings.reduce((v,x)=>v+x.amount,0),
+  today:()=>form.elements.date.value,n:Number,requireAmount:v=>v>0,id:()=>String(data.savings.length),
+  alert:message=>alerts.push(message),closeModal:()=>{},persist:()=>{saves++},
+  openModal:(_title,body,setup)=>{assert.match(body,/الدفع من الادخار/);setup()}};
+ vm.runInNewContext(app.slice(start,end)+";assetTransactionDialog(asset,'expense')",context);
+ form.elements.savingsAccount.onchange();
+ assert.match(notice.textContent,/سجل الادخار وعمليات الأصل فقط/);
+ form.onsubmit({preventDefault(){}});
+ assert.equal(alerts.length,1);
+ assert.equal(saves,0);
+ assert.equal(data.savings.length,1);
+ form.elements.amount.value='400';
+ form.onsubmit({preventDefault(){}});
+ assert.equal(saves,1);
+ assert.equal(data.transactions.length,1);
+ assert.equal(data.savings.length,2);
+ assert.equal(data.savings[1].type,'withdrawal');
+ assert.equal(data.savings[1].incomeAssetId,'car');
+ assert.equal(context.savingAccountTotal(),100);
+ const rows=context.assetLedgerRows(data.transactions,data.savings);
+ assert.equal(rows.length,2);
+ const totals=context.incomeAssetTotals(asset,rows,{start:'2026-10-27',end:'2026-11-27'});
+ assert.equal(totals.expense,400);
+ assert.equal(totals.periodNet,500);
+ assert.equal(totals.net,500);
+ form.elements.savingsAccount.value='';
+ form.onsubmit({preventDefault(){}});
+ assert.equal(data.transactions[0].type,'expense');
+ assert.equal(data.savings.length,2);
 });
 test('AlAhli POS SMS extracts merchant after the Arabic "من" marker',()=>{
  const findMerchant=merchantParser();

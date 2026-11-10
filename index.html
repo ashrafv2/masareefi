@@ -410,7 +410,7 @@ body.entry-v13-open{overflow:hidden}
  <div class="card" id="recurringList"></div>
  <div class="notice">يُسجّل الدخل المتكرر في تاريخ استحقاقه عند فتح التطبيق في ذلك اليوم أو بعده. لن تُنشأ العملية مرتين للشهر نفسه.</div>
 </section>
-<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار الرسمي 31 · 10 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في الإصدار 31؟</summary><p>إضافة قسم الأصول المدرة للدخل: تكلفة الاقتناء، مصدر التمويل، إيرادات ومصاريف التشغيل، وصافي العائد.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
+<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار الرسمي 31.1 · 10 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في الإصدار 31.1؟</summary><p>إضافة قسم الأصول المدرة للدخل: تكلفة الاقتناء، مصدر التمويل، إيرادات ومصاريف التشغيل، وصافي العائد. يمكن دفع مصروف التشغيل من حساب ادخار وتسجيله ضمن الأصل وسجل الادخار.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
 <button class="settingsitem" id="themeColors">لون التطبيق <span>‹</span></button><button class="settingsitem" id="paydaySettings" type="button">موعد الراتب ودورة الميزانية <span id="paydaySettingSummary">يوم 27 · تعديل</span></button>
 <button class="settingsitem" id="smartPasteSettingsOpen" type="button">📋 لصق الرسائل البنكية الذكي <span>‹</span></button><button class="settingsitem" id="shortcutHelpV16" type="button">📩 ربط رسائل البنك باختصارات الآيفون <span>‹</span></button>
 <button class="settingsitem" data-go="assets">🚘 أصول ومشاريع مدرّة للدخل <span>‹</span></button><button class="settingsitem" data-go="incomeLedger">سجل الدخل والراتب المتكرر <span>‹</span></button><button class="settingsitem" data-go="receipts">أرشيف الفواتير <span>‹</span></button><button class="settingsitem" data-go="backup">النسخ الاحتياطي اليدوي <span>‹</span></button><button class="settingsitem" id="financeSyncSettingsV19" type="button">☁ المزامنة المالية بين الأجهزة <span>‹</span></button><div id="syncConnectionSummaryV20" class="sync-summary-v20" role="status" aria-live="polite">جارٍ فحص حالة المزامنة...</div><button class="settingsitem" data-go="budget">الميزانية <span>‹</span></button><button class="settingsitem" data-go="debts">الأقساط والديون <span>‹</span></button><button class="settingsitem" data-go="goals">الأهداف الادخارية <span>‹</span></button><button class="settingsitem" data-go="reports">التقارير <span>‹</span></button></div><div class="notice">البيانات محفوظة في هذا المتصفح. أنشئ نسخة JSON في Google Drive أو iCloud Drive يدويًا بانتظام. يمكن تفعيل المزامنة المالية المشفرة من الإعدادات؛ تعمل أثناء فتح التطبيق وبعد تسجيل الدخول.</div></section>
@@ -1345,10 +1345,55 @@ function assetTransactionDialog(asset,type){
  if(!data.incomeAssets.some(x=>String(x.id)===String(asset.id))){alert('تعذر العثور على الأصل');return}
  if(asset.active===false){alert('أعد تفعيل الأصل قبل تسجيل عمليات جديدة');return}
  const options=catOptions(type).map(c=>'<option value="'+safe(c)+'">'+safe(c)+'</option>').join('');
+ const accounts=type==='expense'?data.savingAccounts.map(account=>
+  '<option value="'+safe(account.id)+'">الدفع من الادخار: '+safe(account.name)+' · '+money(savingAccountTotal(account.id))+'</option>'
+ ).join(''):'';
+ const paymentField=accounts?'<div class="field"><label for="assetSavingsAccount">طريقة التسجيل</label><select id="assetSavingsAccount" name="savingsAccount"><option value="">مصروف عادي</option>'+accounts+'</select></div>':'';
+ const regularNotice='ستظهر العملية في السجل المعتاد وضمن عمليات الأصل.';
  openModal((type==='income'?'تسجيل دخل من ':'تسجيل مصروف تشغيل لـ ')+safe(asset.name),
-  '<form id="assetTxForm"><div class="field"><label>المبلغ (ريال)</label><input name="amount" type="number" min="0.01" step="0.01" required></div><div class="field"><label>التصنيف</label><select name="category">'+options+'</select></div><div class="field"><label>الوصف</label><input name="note" required value="'+safe(asset.name)+'"></div><div class="field"><label>التاريخ</label><input name="date" type="date" required value="'+today()+'"></div><div class="notice">سيظهر '+(type==='income'?'الدخل':'المصروف')+' في السجل المعتاد، مع ربطه بهذا الأصل.</div><div class="actions"><button class="btn" type="submit">حفظ العملية</button></div></form>',
-  ()=>{const form=el('assetTxForm');form.onsubmit=e=>{e.preventDefault();const amount=Number(form.elements.amount.value);if(!requireAmount(amount))return;const category=form.elements.category.value;if(!category)return;data.transactions.unshift({id:id(),type,amount,category,categoryParent:category.split(' / ')[0],date:form.elements.date.value,note:form.elements.note.value.trim(),method:'cash',incomeAssetId:asset.id});closeModal();persist()}}
+  '<form id="assetTxForm"><div class="field"><label>المبلغ (ريال)</label><input name="amount" type="number" min="0.01" step="0.01" required></div><div class="field"><label>التصنيف</label><select name="category">'+options+'</select></div><div class="field"><label>الوصف</label><input name="note" required value="'+safe(asset.name)+'"></div><div class="field"><label>التاريخ</label><input name="date" type="date" required value="'+today()+'"></div>'+paymentField+'<div id="assetPaymentNotice" class="notice" aria-live="polite">'+regularNotice+'</div><div class="actions"><button class="btn" type="submit">حفظ العملية</button></div></form>',
+  ()=>{
+   const form=el('assetTxForm');
+   const savingsAccount=type==='expense'?form.elements.savingsAccount:null;
+   if(savingsAccount)savingsAccount.onchange=()=>{
+    el('assetPaymentNotice').textContent=savingsAccount.value
+     ?'سيُسحب المبلغ من حساب الادخار ويظهر في سجل الادخار وعمليات الأصل فقط.'
+     :regularNotice;
+   };
+   form.onsubmit=event=>{
+    event.preventDefault();
+    const amount=Number(form.elements.amount.value);
+    const category=form.elements.category.value;
+    if(!requireAmount(amount)||!category){alert('أدخل مبلغًا صحيحًا واختر التصنيف');return}
+    const account=savingsAccount?.value;
+    const date=form.elements.date.value;
+    const note=form.elements.note.value.trim();
+    if(account){
+     if(!data.savingAccounts.some(item=>item.id===account)||savingAccountTotal(account)+.0001<amount){
+      alert('رصيد حساب الادخار المختار لا يكفي لهذا المصروف');
+      return;
+     }
+     data.savings.push({id:id(),type:'withdrawal',account,amount,category,date,note,incomeAssetId:asset.id});
+    }else{
+     data.transactions.unshift({id:id(),type,amount,category,categoryParent:category.split(' / ')[0],date,note,method:'cash',incomeAssetId:asset.id});
+    }
+    closeModal();
+    persist();
+   };
+  }
  );
+}
+function assetLedgerRows(transactions,savings){
+ const operatingWithdrawals=savings
+  .filter(row=>row.type==='withdrawal'&&row.incomeAssetId!=null)
+  .map(row=>({...row,type:'expense',savingsAccount:row.account}));
+ return [...transactions,...operatingWithdrawals];
+}
+function renderAssetLedgerRow(row){
+ if(!row.savingsAccount)return txRows([row]);
+ return '<div class="txrow"><div class="rowmain"><b>'+safe(row.note||row.category)+'</b><small>'+
+  safe([row.category,row.date,'ادخار: '+accountLabel(row.savingsAccount)].join(' · '))+
+  '</small></div><strong class="value negative">−'+money(row.amount)+'</strong></div>';
 }
 function createIncomeAsset(){
  const accounts=data.savingAccounts.map(a=>'<option value="'+safe(a.id)+'">'+safe(a.name)+' · '+money(savingAccountTotal(a.id))+'</option>').join('');
@@ -1360,10 +1405,11 @@ function createIncomeAsset(){
 function renderIncomeAssets(){
  const assets=Array.isArray(data.incomeAssets)?data.incomeAssets:[];
  const period=paydayCycle.forEndMonth(month,data.paydayDay);
- const totals=assets.map(a=>incomeAssetTotals(a,data.transactions,period));
+ const ledger=assetLedgerRows(data.transactions,data.savings);
+ const totals=assets.map(a=>incomeAssetTotals(a,ledger,period));
  const allCost=totals.reduce((v,x)=>v+x.cost,0),allNet=totals.reduce((v,x)=>v+x.net,0),cycleNet=totals.reduce((v,x)=>v+x.periodNet,0);
  el('incomeAssetsSummary').innerHTML='<div class="triplet" style="box-shadow:none"><div><strong>'+money(allCost)+'</strong><small>تكلفة الاقتناء</small></div><div><strong>'+money(allNet)+'</strong><small>صافي العائد المتراكم</small></div><div><strong>'+money(cycleNet)+'</strong><small>صافي دورة الراتب</small></div></div>';
- el('incomeAssetsList').innerHTML=assets.length?assets.map((a,i)=>{const m=totals[i],linked=data.transactions.filter(t=>String(t.incomeAssetId)===String(a.id)).sort((x,y)=>String(y.date).localeCompare(String(x.date))),archived=a.active===false;return '<article class="card"><div class="sectionbar" style="margin-top:0"><div><h3>'+safe(a.name)+(archived?' · مؤرشف':'')+'</h3><small>اقتناء '+safe(a.purchaseDate||'')+' · '+money(m.cost)+'</small></div><strong class="value '+(m.net<0?'negative':'positive')+'">'+money(m.net)+'</strong></div><div class="triplet" style="box-shadow:none"><div><strong>'+money(m.income)+'</strong><small>إيرادات</small></div><div><strong>'+money(m.expense)+'</strong><small>تشغيل</small></div><div><strong>'+money(m.periodNet)+'</strong><small>هذه الدورة</small></div></div><div class="progress"><span style="width:'+m.recoveryPct+'%"></span></div><small>استُرد '+money(Math.min(m.cost,m.recovered))+' من تكلفة الاقتناء · المتبقي '+money(m.remaining)+'</small><div class="actions">'+(archived?'':'<button class="btn secondary" data-asset-action="income" data-id="'+safe(a.id)+'">＋ دخل</button><button class="btn outline" data-asset-action="expense" data-id="'+safe(a.id)+'">− مصروف تشغيل</button>')+'<button class="btn secondary" data-asset-action="toggle" data-id="'+safe(a.id)+'">'+(archived?'إعادة تفعيل':'أرشفة')+'</button></div><details><summary>عمليات الأصل ('+linked.length+')</summary>'+(linked.length?txRows(linked):'<p class="empty">لم تُسجل عمليات لهذا الأصل بعد.</p>')+'</details></article>'}).join(''):'<div class="card empty">أضف أصلًا مدرًا للدخل مثل سيارة للتأجير، ثم سجّل الإيرادات ومصاريف التشغيل المرتبطة به.</div>';
+ el('incomeAssetsList').innerHTML=assets.length?assets.map((a,i)=>{const m=totals[i],linked=ledger.filter(t=>String(t.incomeAssetId)===String(a.id)).sort((x,y)=>String(y.date).localeCompare(String(x.date))),archived=a.active===false;return '<article class="card"><div class="sectionbar" style="margin-top:0"><div><h3>'+safe(a.name)+(archived?' · مؤرشف':'')+'</h3><small>اقتناء '+safe(a.purchaseDate||'')+' · '+money(m.cost)+'</small></div><strong class="value '+(m.net<0?'negative':'positive')+'">'+money(m.net)+'</strong></div><div class="triplet" style="box-shadow:none"><div><strong>'+money(m.income)+'</strong><small>إيرادات</small></div><div><strong>'+money(m.expense)+'</strong><small>تشغيل</small></div><div><strong>'+money(m.periodNet)+'</strong><small>هذه الدورة</small></div></div><div class="progress"><span style="width:'+m.recoveryPct+'%"></span></div><small>استُرد '+money(Math.min(m.cost,m.recovered))+' من تكلفة الاقتناء · المتبقي '+money(m.remaining)+'</small><div class="actions">'+(archived?'':'<button class="btn secondary" data-asset-action="income" data-id="'+safe(a.id)+'">＋ دخل</button><button class="btn outline" data-asset-action="expense" data-id="'+safe(a.id)+'">− مصروف تشغيل</button>')+'<button class="btn secondary" data-asset-action="toggle" data-id="'+safe(a.id)+'">'+(archived?'إعادة تفعيل':'أرشفة')+'</button></div><details><summary>عمليات الأصل ('+linked.length+')</summary>'+(linked.length?linked.map(renderAssetLedgerRow).join(''):'<p class="empty">لم تُسجل عمليات لهذا الأصل بعد.</p>')+'</details></article>'}).join(''):'<div class="card empty">أضف أصلًا مدرًا للدخل مثل سيارة للتأجير، ثم سجّل الإيرادات ومصاريف التشغيل المرتبطة به.</div>';
 }
 function renderExtra(transactions,inc,exp,net){
  txt('incomeLedgerTotal',money(inc));
