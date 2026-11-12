@@ -338,10 +338,12 @@ body.entry-v13-open{overflow:hidden}
 <header class="head v12-head">
   <div class="headtop v12-top">
     <button class="iconbtn" data-go="settings" aria-label="الإعدادات"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 14 4.3l3-.1.8 2.9 2.7 1.3-1 2.9 1 2.9-2.7 1.3-.8 2.9-3-.1L12 22l-2-2.3-3 .1-.8-2.9-2.7-1.3 1-2.9-1-2.9 2.7-1.3L7 4.2l3 .1Z"/><circle cx="12" cy="12" r="3.2"/></svg></button>
-    <strong class="brand">مصاريفي</strong>
+    <strong class="brand">مصاريفي <span class="reference-brand-icon" aria-hidden="true"></span></strong>
     <button class="iconbtn" data-go="reports" aria-label="التقارير"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9h9"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M15 3.5A9 9 0 0 1 20.5 9"/></svg></button>
   </div>
+  <div class="reference-welcome"><h1>مرحبًا بك 👋</h1><p>إدارة مصاريفك وأموالك بسهولة</p></div>
   <div class="v12-hero">
+    <span class="reference-wallet" aria-hidden="true"></span>
     <p class="v12-kicker">المتبقي من دخل الشهر</p>
     <strong class="v12-net" id="headNet">0 ر.س</strong>
     <div class="monthbar v12-monthbar" aria-label="اختيار الشهر">
@@ -377,6 +379,8 @@ body.entry-v13-open{overflow:hidden}
       </button>
     </div>
   </div>
+  <section class="card reference-overview" aria-labelledby="overviewTitle"><div class="sectionbar"><h2 id="overviewTitle">نظرة سريعة</h2><button class="subtlelink" data-go="reports">التقارير ‹</button></div><div id="homeOverview"></div></section>
+  <section class="card reference-goals" aria-labelledby="homeGoalsTitle"><div class="sectionbar"><h2 id="homeGoalsTitle">أهداف الادخار 🎯</h2><button class="subtlelink" data-go="goals">عرض الكل ‹</button></div><div id="homeGoals"></div></section>
   <div class="v12-sectionbar">
     <div>
       <h2>آخر العمليات</h2>
@@ -836,6 +840,24 @@ function render(){const transactions=monthTransactions(),inc=sum(transactions,'i
  const catSums={};transactions.filter(t=>t.type==='expense').forEach(t=>catSums[t.category]=(catSums[t.category]||0)+n(t.amount));const max=Math.max(1,...Object.values(catSums));el('reportCats').innerHTML=Object.entries(catSums).sort((a,b)=>b[1]-a[1]).map(([cat,v])=>`<div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between"><b>${safe(cat)}</b><span>${money(v)}</span></div><div class="progress"><span style="width:${Math.round(v/max*100)}%"></span></div></div>`).join('')||rowEmpty('لا توجد مصروفات لهذا الشهر');
  renderExtra(transactions,inc,exp,net);
  renderIncomeAssets();
+ renderReferenceDashboard(transactions);
+}
+// Read-only home summaries reuse the selected salary cycle and saved goals.
+function renderReferenceDashboard(transactions){
+ const totals=new Map();
+ for(const t of transactions)if(t.type==='expense'){
+  const category=t.categoryParent||String(t.category||'أخرى').split(' / ')[0];
+  totals.set(category,(totals.get(category)||0)+n(t.amount));
+ }
+ const sorted=[...totals].sort((a,b)=>b[1]-a[1]),total=sorted.reduce((v,x)=>v+x[1],0);
+ const groups=sorted.slice(0,3);if(sorted.length>3)groups.push(['أخرى',sorted.slice(3).reduce((v,x)=>v+x[1],0)]);
+ const colors=[0,1,2,3].map(i=>`color-mix(in srgb,var(--accent) ${100-i*19}%,white)`);
+ let start=0;const stops=groups.map(([name,value],i)=>{const end=start+value/total*100;const stop=`${colors[i]} ${start}% ${end}%`;start=end;return stop});
+ el('homeOverview').innerHTML=total?`<div class="reference-chart"><div class="reference-donut" role="img" aria-label="توزيع مصروفات الدورة: ${safe(money(total))}" style="background:conic-gradient(${stops.join(',')})"><span>المصروفات<br><b>${safe(money(total))}</b></span></div><ul>${groups.map(([name,value],i)=>`<li><i style="background:${colors[i]}"></i><span>${safe(name)}</span><b>${Math.round(value/total*100)}%</b></li>`).join('')}</ul></div>`:'<div class="empty">ستظهر هنا نسب مصروفاتك بعد إضافة أول عملية في هذه الدورة.</div>';
+ el('homeGoals').innerHTML=data.goals.length?data.goals.slice(0,2).map(g=>{
+  const pct=n(g.target)>0?Math.max(0,Math.min(100,Math.round(n(g.current)/n(g.target)*100))):0;
+  return `<button type="button" class="reference-goal" data-go="goals"><span><b>${safe(g.name)}</b><small>${safe(money(g.current))} من ${safe(money(g.target))}</small></span><strong>${pct}%</strong><span class="progress" role="progressbar" aria-label="${safe(g.name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><span style="width:${pct}%"></span></span></button>`;
+ }).join(''):'<button type="button" class="reference-goal" data-go="goals">ابدأ هدف ادخار جديدًا <span>＋</span></button>';
 }
 function openModal(title,body,after){txt('modalTitle',title);el('modalBody').innerHTML=body;if(el('modal').open)el('modal').close();el('modal').showModal();if(after)after()}
 function closeModal(){el('modal').close()}
@@ -2555,13 +2577,14 @@ const palettes={
  wallet:['#ae8af5','#7552cf','#f5c66c'],income:['#6cdbb2','#28a780','#ffce78'],
  expense:['#ffafad','#e46f7d','#ffd084'],car:['#afa8ed','#736cbb','#ffda7b']
 };
-function icon(name){
- const p=palettes[name]||palettes.wallet;let shape=shapes[name]||shapes.wallet;for(const key of ['body','top','gold','edge'])shape=shape.split('url(#'+key+')').join('url(#m3d-'+name+'-'+key+')');
+let iconSequence=0;
+function icon(name){ const uid=name+'-'+(++iconSequence);
+ const p=palettes[name]||palettes.wallet;let shape=shapes[name]||shapes.wallet;for(const key of ['body','top','gold','edge'])shape=shape.split('url(#'+key+')').join('url(#m3d-'+uid+'-'+key+')');
  return '<svg class="m3d-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" focusable="false"><defs>'+
- '<linearGradient id="m3d-'+name+'-body" x1=".1" x2=".85" y1=".03" y2="1"><stop stop-color="'+p[0]+'"/><stop offset=".6" stop-color="'+p[1]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient>'+
- '<linearGradient id="m3d-'+name+'-top" x1="0" x2=".8" y1="0" y2="1"><stop stop-color="#fff" stop-opacity=".95"/><stop offset=".12" stop-color="'+p[0]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient>'+
- '<linearGradient id="m3d-'+name+'-gold" x1=".1" x2=".9" y1="0" y2="1"><stop stop-color="#fff1ad"/><stop offset=".48" stop-color="'+p[2]+'"/><stop offset="1" stop-color="#e19b41"/></linearGradient>'+
- '<linearGradient id="m3d-'+name+'-edge"><stop stop-color="#ffffff" stop-opacity=".65"/><stop offset="1" stop-color="#42336b" stop-opacity=".52"/></linearGradient></defs>'+
+ '<linearGradient id="m3d-'+uid+'-body" x1=".1" x2=".85" y1=".03" y2="1"><stop stop-color="'+(['income','expense','savings'].includes(name)?p[0]:'var(--theme-line)')+'"/><stop offset=".6" stop-color="'+(['income','expense','savings'].includes(name)?p[1]:'var(--accent)')+'"/><stop offset="1" stop-color="'+(['income','expense','savings'].includes(name)?p[1]:'var(--accent)')+'"/></linearGradient>'+
+ '<linearGradient id="m3d-'+uid+'-top" x1="0" x2=".8" y1="0" y2="1"><stop stop-color="#fff" stop-opacity=".95"/><stop offset=".12" stop-color="'+(['income','expense','savings'].includes(name)?p[0]:'var(--theme-line)')+'"/><stop offset="1" stop-color="'+(['income','expense','savings'].includes(name)?p[1]:'var(--accent)')+'"/></linearGradient>'+
+ '<linearGradient id="m3d-'+uid+'-gold" x1=".1" x2=".9" y1="0" y2="1"><stop stop-color="#fff1ad"/><stop offset=".48" stop-color="'+p[2]+'"/><stop offset="1" stop-color="#e19b41"/></linearGradient>'+
+ '<linearGradient id="m3d-'+uid+'-edge"><stop stop-color="#ffffff" stop-opacity=".65"/><stop offset="1" stop-color="#42336b" stop-opacity=".52"/></linearGradient></defs>'+
  '<ellipse cx="20" cy="37" rx="13" ry="2" fill="#443366" opacity=".13"/>'+shape+'</svg>';
 }
 function change(selector,name,slotSelector){
@@ -2583,9 +2606,37 @@ function setup(){
  change('#entryLauncher','add');
  change('#smartPasteHomeOpen','clipboard');
  change('.v12-assets-icon','wallet');
+ document.querySelector('.reference-wallet').innerHTML=icon('wallet');
+ document.querySelector('.reference-brand-icon').innerHTML=icon('wallet');
  change('.v12-stat:first-child .v12-stat-label','income');
  change('.v12-stat:nth-child(2) .v12-stat-label','expense');
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
 })();
-</script></body></html>
+</script>
+<style id="reference-dashboard-theme">
+/* Reference-inspired surfaces derive from the user's existing theme selection. */
+:root{--reference-surface:color-mix(in srgb,var(--accent) 5%,white);--reference-shadow:0 10px 26px color-mix(in srgb,var(--accent) 13%,transparent)}
+html,body,.shell{background:var(--reference-surface)}
+.shell{background:radial-gradient(ellipse at 0 15%,var(--theme-line),transparent 48%),var(--reference-surface)}
+.head.v12-head{background:transparent!important;color:var(--text)!important;box-shadow:none;border-radius:0;padding:calc(20px + env(safe-area-inset-top)) 18px 8px!important}
+.head.v12-head .brand,.head.v12-head .iconbtn{color:var(--text)!important}
+.head.v12-head .iconbtn{border:1px solid white!important;border-radius:50%;background:#ffffff9c!important;box-shadow:var(--reference-shadow)}
+.v12-top .brand{display:flex;align-items:center;justify-content:center;gap:8px;font-size:28px}
+.reference-brand-icon .m3d-icon{width:42px;height:42px}
+.reference-welcome{padding:20px 0 12px}.reference-welcome h1{font-size:22px;margin:0}.reference-welcome p{margin:2px 0;color:var(--muted);font-size:14px}
+.head.v12-head .v12-hero{position:relative;isolation:isolate;align-items:flex-start;padding:22px 19px 15px;padding-inline-end:115px;margin:0 0 15px;border:1px solid #ffffffb8;border-radius:25px;background:linear-gradient(130deg,var(--theme-line),var(--accent) 62%,var(--accent-dark));box-shadow:inset 0 2px 4px #ffffff91,var(--reference-shadow);min-height:166px}
+.v12-hero .v12-kicker,.v12-hero .v12-net{color:var(--theme-foreground)!important}.v12-net{font-size:clamp(24px,7vw,38px);max-width:100%;white-space:normal;overflow-wrap:anywhere;text-align:right}
+.reference-wallet{position:absolute;inset-inline-end:10px;top:20px;pointer-events:none}.reference-wallet .m3d-icon{width:105px;height:105px;transform:rotate(-7deg);filter:drop-shadow(0 9px 5px #0002)}
+.v12-monthbar{flex-wrap:wrap;justify-content:flex-start!important;gap:4px!important}.v12-monthbar #payPeriodLabel{flex-basis:100%;order:3;text-align:right!important;color:var(--theme-foreground)!important;font-size:10px!important}.v12-monthbar input{width:125px!important;max-width:100%!important;color:var(--theme-foreground)!important;color-scheme:normal}.v12-monthbar button{color:var(--theme-foreground)!important}
+.v12-hero-stats .v12-stat{background:linear-gradient(135deg,#ffffffde,var(--theme-soft));border:1px solid white;box-shadow:var(--reference-shadow);border-radius:23px;padding:12px 14px}.v12-hero-stats .v12-stat:nth-child(2){background:linear-gradient(135deg,#fff,#fff0f3)}
+.v12-stat .v12-stat-label,.v12-stat .v12-stat-label small,.v12-stat strong{color:var(--text)!important}.v12-stat-label{justify-content:space-between}.v12-stat-label .m3d-icon{width:31px;height:31px}.v12-stat strong{font-size:clamp(19px,5vw,26px)}
+.content{padding:8px 18px 24px}.card,.reference-overview,.reference-goals{border:1px solid #fff;border-radius:24px;background:#ffffffad;box-shadow:var(--reference-shadow)}
+.reference-overview .sectionbar,.reference-goals .sectionbar{margin:0 0 12px}.reference-chart{display:flex;align-items:center;gap:18px;direction:ltr;padding:4px 0 8px}.reference-donut{width:140px;height:140px;flex:none;border-radius:50%;position:relative;box-shadow:inset 0 2px 4px #fff9,0 5px 9px #0001}.reference-donut:before{content:"";position:absolute;inset:28px;background:var(--reference-surface);border-radius:50%;box-shadow:inset 0 3px 8px #0001}.reference-donut>span{position:absolute;inset:34px 18px;display:grid;align-content:center;text-align:center;font-size:10px;direction:rtl}.reference-donut b{font-size:12px}.reference-chart ul{list-style:none;padding:0;margin:0;flex:1;direction:rtl;min-width:0}.reference-chart li{display:flex;align-items:center;gap:7px;font-size:12px;margin:10px 0}.reference-chart li span{flex:1;overflow-wrap:anywhere}.reference-chart i{width:10px;height:10px;border-radius:4px;flex:none}
+.reference-goal{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:right;border:1px solid white;border-radius:18px;background:var(--theme-soft-2);color:var(--text);padding:12px;margin:8px 0}.reference-goal small{display:block;color:var(--muted);font-size:11px}.reference-goal .progress{width:100%;margin:0;height:9px}.reference-goal .progress span{background:linear-gradient(90deg,var(--theme-line),var(--accent-dark))}
+#p-home .v12-home-actions{margin:8px 0 16px}#p-home #entryLauncher,#p-home #smartPasteHomeOpen{min-height:65px!important;border-radius:21px!important}#p-home #entryLauncher{background:var(--accent)!important;color:var(--theme-foreground)!important}
+.bottom{background:#fffffff0;border-color:white;box-shadow:0 -5px 25px color-mix(in srgb,var(--accent) 12%,transparent);border-radius:26px 26px 0 0}.bottom button{min-width:0;flex:1;padding:6px 2px}.bottom button .m3d-icon{width:34px;height:34px}
+@supports(backdrop-filter:blur(12px)){.bottom{background:#ffffffbf;backdrop-filter:blur(18px)}}
+@media(max-width:360px){.head.v12-head{padding-inline:12px!important}.content{padding-inline:12px}.reference-chart{gap:10px}.reference-donut{width:120px;height:120px}.reference-wallet .m3d-icon{width:80px;height:80px}.head.v12-head .v12-hero{padding-inline-end:92px}.v12-monthbar input{width:105px!important}.v12-top .brand{font-size:24px}}
+</style>
+</body></html>
