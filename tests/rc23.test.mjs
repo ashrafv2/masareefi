@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 31\.2/);
+ assert.match(app,/الإصدار الرسمي 31\.3/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v31-20261112-r3/);
+ assert.match(worker,/masareefi-official-shell-v31-20261112-r4/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -366,4 +366,26 @@ test('category picker opens as modal above its owner and cleans up without chang
  vm.runInContext('openCategoryPicker(select)',context);layer.dispatchEvent(new Event('cancel',{cancelable:true}));assert.equal(layer.isConnected,false);assert.equal(changes,1);
  vm.runInContext('openCategoryPicker(select)',context);owner.close();assert.equal(layer.isConnected,false);assert.equal(observer.disconnected,true);
  owner.open=true;vm.runInContext('openCategoryPicker(select)',context);select.isConnected=false;observer.callback();assert.equal(layer.isConnected,false);
+});
+
+test('transaction detail cards read records without writing and escape saved text',()=>{
+ const source=app.match(/function showTransactionDetails\(which\)\{[\s\S]*?\n\}/)?.[0];
+ assert.ok(source);
+ const transaction={id:42,type:'expense',amount:499.15,category:'مقاضي <img>',date:'2026-11-12',note:'متجر <script>',method:'cash'};
+ const data={transactions:[transaction]},before=JSON.stringify(data),nodes=new Map();
+ const node=id=>{if(!nodes.has(id))nodes.set(id,{innerHTML:'',onclick:null,querySelector:()=>({}),showModal(){this.open=true},close(){this.open=false}});return nodes.get(id)};
+ let edited=false;
+ const context={data,el:node,resolveMerchantLogoV17:()=>null,conciseMerchant:x=>x,
+  categoryIconSvg:()=>'<svg></svg>',transactionIconV12:()=>'<svg></svg>',money:x=>String(x),
+  safe:x=>String(x??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'),
+  document:{activeElement:null},window:{masareefiDialogMotion:{open(){},close(){}}},editTransaction(){edited=true},act(){throw Error('detail display must not write')}};
+ vm.runInNewContext(source+';showTransactionDetails("42")',context);
+ assert.equal(JSON.stringify(data),before);
+ assert.equal(edited,false);
+ assert.equal(node('transactionDetails').open,true);
+ assert.match(node('transactionDetailsBody').innerHTML,/متجر &lt;script&gt;/);
+ assert.match(node('transactionDetailsBody').innerHTML,/مقاضي &lt;img&gt;/);
+ assert.match(node('transactionDetailsBody').innerHTML,/499.15/);
+ assert.match(node('transactionDetailsBody').innerHTML,/2026-11-12/);
+ node('ticketEdit').onclick();assert.equal(edited,true);
 });
