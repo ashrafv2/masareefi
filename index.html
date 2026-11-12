@@ -320,6 +320,20 @@ body.entry-v13-open{overflow:hidden}
 .btn:not(.danger):not(.secondary):not(.outline){color:var(--theme-foreground)!important}
 .head .balance-tile small{color:var(--theme-foreground)!important}
 :root{accent-color:var(--accent)}
+</style><style id="masareefi-3d-icons-v24">
+/* Self-contained vector artwork. Theme, data and click handlers remain intact. */
+.m3d-icon{display:inline-block;flex:none;width:29px;height:29px;vertical-align:middle;overflow:visible;filter:drop-shadow(0 2px 2px rgba(33,24,62,.19));transform:translateZ(0)}
+.bottom button>span.m3d-slot{display:grid;place-items:center;width:37px;height:34px;line-height:1;position:relative}
+.bottom button .m3d-icon{width:30px;height:30px;transition:transform .2s ease,filter .2s ease}
+.bottom button.active .m3d-icon{transform:translateY(-2px) scale(1.10);filter:drop-shadow(0 3px 4px rgba(39,29,75,.25))}
+.bottom button:active .m3d-icon,.m3d-touch:active .m3d-icon{transform:scale(.88) rotate(-5deg)}
+.v12-head .iconbtn .m3d-icon{width:27px;height:27px}
+.v12-stat-label .m3d-icon{width:23px;height:23px}
+.entry-launcher .m3d-icon,.smart-paste-home-button .m3d-icon{width:27px;height:27px}
+.v12-assets-icon .m3d-icon{width:29px;height:29px}
+.circle:not(.red) .m3d-icon{width:27px;height:27px}
+.m3d-touch{touch-action:manipulation}
+@media(prefers-reduced-motion:reduce){.m3d-icon{transition:none!important}}
 </style></head><body><div class="shell">
 <header class="head v12-head">
   <div class="headtop v12-top">
@@ -2515,4 +2529,63 @@ function entryKeyLogicV13(current,key){
     .catch(()=>{ /* Network-first app remains functional without service worker. */ }),{once:true});
  }
 })();
-</script><script src="./device-vault.js?v=22" defer></script><script src="./cloud-sync.js?v=23" defer></script></body></html>
+</script><script src="./device-vault.js?v=22" defer></script><script src="./cloud-sync.js?v=23" defer></script><script id="masareefi-3d-icons-v24-js">
+(function(){
+'use strict';
+/* Hand-drawn SVG pictograms are embedded, fast, crisp and available offline. */
+const shapes={
+ home:'<path d="M4 15 20 3l16 12v18a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3Z" fill="url(#body)" stroke="url(#edge)" stroke-width="1.6"/><path d="M2 15 20 1l18 14-3 4L20 8 5 19Z" fill="url(#top)" stroke="#fff" stroke-opacity=".35"/><rect x="16" y="22" width="9" height="14" rx="2.7" fill="url(#gold)"/><path d="M7 19h26" stroke="#fff" stroke-opacity=".48" stroke-width="2"/>',
+ transactions:'<rect x="7" y="4" width="26" height="31" rx="6" fill="url(#body)" stroke="url(#edge)" stroke-width="1.4"/><path d="M13 14h15M13 19h11" stroke="#fff" stroke-width="2.3" stroke-linecap="round" opacity=".8"/><path d="M12 27h15m-4-4 4 4-4 4" fill="none" stroke="url(#gold)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6h14" stroke="#fff" opacity=".55" stroke-width="2"/>',
+ savings:'<ellipse cx="20" cy="23" rx="16" ry="12" fill="url(#body)" stroke="url(#edge)" stroke-width="1.3"/><circle cx="12" cy="18" r="5" fill="url(#top)"/><path d="M29 17l6-3 1 6-5 4" fill="url(#top)"/><path d="M16 14h9" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="13" cy="24" r="2" fill="#272047"/><path d="M13 33v3m14-3v3" stroke="url(#edge)" stroke-width="3" stroke-linecap="round"/><ellipse cx="20" cy="10" rx="5" ry="2" fill="url(#gold)"/>',
+ receivables:'<rect x="6" y="3" width="27" height="33" rx="5" fill="url(#body)" stroke="url(#edge)" stroke-width="1.3"/><path d="M12 11h15M12 17h8" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="27" cy="27" r="9" fill="url(#gold)" stroke="#bf7937" stroke-width=".7"/><path d="M27 22v10m-3-7h5" stroke="#fff8d5" stroke-width="2" stroke-linecap="round"/>',
+ settings:'<path d="m16 3 8 0 2 5 5 1 5 7-3 6 1 5-7 6-6-2-6 2-7-6 1-5-3-6 5-7 5-1Z" fill="url(#body)" stroke="url(#edge)" stroke-width="1.7"/><circle cx="20" cy="19" r="9" fill="url(#top)" stroke="#fff" stroke-width="1.3"/><circle cx="20" cy="19" r="4" fill="#f1eaff" stroke="#9f75d9" stroke-width="1.5"/><path d="M12 12q8-9 17-1" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2"/>',
+ reports:'<rect x="5" y="22" width="8" height="15" rx="2.5" fill="url(#top)"/><rect x="16" y="14" width="8" height="23" rx="2.5" fill="url(#body)"/><rect x="27" y="5" width="8" height="32" rx="2.5" fill="url(#gold)"/><path d="m8 14 10-6 6 2 9-8m-6 0h6v6" stroke="#34b87b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+ add:'<circle cx="20" cy="20" r="16" fill="url(#body)" stroke="url(#edge)" stroke-width="1.7"/><path d="M20 11v18M11 20h18" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M11 10q10-8 18 0" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2.5"/>',
+ clipboard:'<rect x="8" y="5" width="25" height="32" rx="5" fill="url(#body)" stroke="url(#edge)" stroke-width="1.5"/><rect x="14" y="2" width="13" height="8" rx="3" fill="url(#gold)"/><path d="M14 18h13M14 24h13M14 30h9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".86"/>',
+ wallet:'<rect x="3" y="10" width="33" height="25" rx="7" fill="url(#body)" stroke="url(#edge)" stroke-width="1.4"/><path d="M7 11V6q0-3 4-3h19v10Z" fill="url(#top)"/><rect x="22" y="18" width="16" height="11" rx="3.5" fill="url(#gold)" stroke="#b77b37"/><circle cx="29" cy="23.5" r="2" fill="#fff4ce"/><path d="M6 14q9-4 19-2" stroke="#fff" stroke-opacity=".55" stroke-width="2"/>',
+ income:'<circle cx="20" cy="20" r="16" fill="url(#body)" stroke="url(#edge)" stroke-width="1.5"/><path d="m12 24 8-9 8 9M20 15v15" fill="none" stroke="#fff" stroke-width="3.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 13q10-9 21 0" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>',
+ expense:'<circle cx="20" cy="20" r="16" fill="url(#body)" stroke="url(#edge)" stroke-width="1.5"/><path d="m12 16 8 9 8-9M20 25V10" fill="none" stroke="#fff" stroke-width="3.7" stroke-linecap="round" stroke-linejoin="round"/>',
+ car:'<path d="m8 13 5-8h15l5 8 3 5v13H4V18Z" fill="url(#body)" stroke="url(#edge)" stroke-width="1.4"/><path d="m13 8-4 8h22l-4-8Z" fill="url(#top)"/><rect x="7" y="23" width="7" height="5" rx="2" fill="url(#gold)"/><rect x="26" y="23" width="7" height="5" rx="2" fill="url(#gold)"/><circle cx="10" cy="32" r="4" fill="#504571"/><circle cx="30" cy="32" r="4" fill="#504571"/>'
+};
+const palettes={
+ home:['#aa82ff','#7143d4','#ffd487'],transactions:['#8b9cff','#5268d7','#ffd18b'],
+ savings:['#ff9cc2','#ec6099','#ffdf6f'],receivables:['#8fdbff','#3e91c9','#ffcc65'],
+ settings:['#bda4ed','#8560c5','#efc76e'],reports:['#b895ff','#7c59db','#eeb94e'],
+ add:['#ad87ff','#7951d5','#ffd180'],clipboard:['#9b88e9','#5c60c7','#ffcc73'],
+ wallet:['#ae8af5','#7552cf','#f5c66c'],income:['#6cdbb2','#28a780','#ffce78'],
+ expense:['#ffafad','#e46f7d','#ffd084'],car:['#afa8ed','#736cbb','#ffda7b']
+};
+function icon(name){
+ const p=palettes[name]||palettes.wallet,shape=shapes[name]||shapes.wallet;
+ return '<svg class="m3d-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" focusable="false"><defs>'+
+ '<linearGradient id="body" x1=".1" x2=".85" y1=".03" y2="1"><stop stop-color="'+p[0]+'"/><stop offset=".6" stop-color="'+p[1]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient>'+
+ '<linearGradient id="top" x1="0" x2=".8" y1="0" y2="1"><stop stop-color="#fff" stop-opacity=".95"/><stop offset=".12" stop-color="'+p[0]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient>'+
+ '<linearGradient id="gold" x1=".1" x2=".9" y1="0" y2="1"><stop stop-color="#fff1ad"/><stop offset=".48" stop-color="'+p[2]+'"/><stop offset="1" stop-color="#e19b41"/></linearGradient>'+
+ '<linearGradient id="edge"><stop stop-color="#ffffff" stop-opacity=".65"/><stop offset="1" stop-color="#42336b" stop-opacity=".52"/></linearGradient></defs>'+
+ '<ellipse cx="20" cy="37" rx="13" ry="2" fill="#443366" opacity=".13"/>'+shape+'</svg>';
+}
+function change(selector,name,slotSelector){
+ const parent=document.querySelector(selector);if(!parent)return;
+ const target=slotSelector?parent.querySelector(slotSelector):parent.querySelector('svg');
+ if(!target)return;
+ target.innerHTML=icon(name);
+ if(target.tagName.toLowerCase()==='svg'){target.outerHTML=icon(name)}
+ parent.classList.add('m3d-touch');
+}
+function setup(){
+ const nav={home:'home',transactions:'transactions',savings:'savings',receivables:'receivables',settings:'settings'};
+ document.querySelectorAll('.bottom button[data-go]').forEach(btn=>{
+  const key=nav[btn.dataset.go],span=btn.querySelector('span');if(!key||!span)return;
+  span.classList.add('m3d-slot');span.innerHTML=icon(key);
+ });
+ change('.v12-head .iconbtn[data-go="settings"]','settings');
+ change('.v12-head .iconbtn[data-go="reports"]','reports');
+ change('#entryLauncher','add');
+ change('#smartPasteHomeOpen','clipboard');
+ change('.v12-assets-icon','wallet');
+ change('.v12-stat:first-child .v12-stat-label','income');
+ change('.v12-stat:nth-child(2) .v12-stat-label','expense');
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
+})();
+</script></body></html>
