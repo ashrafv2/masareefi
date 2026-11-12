@@ -2556,7 +2556,7 @@ const palettes={
  expense:['#ffafad','#e46f7d','#ffd084'],car:['#afa8ed','#736cbb','#ffda7b']
 };
 function icon(name){
- const p=palettes[name]||palettes.wallet,shape=(shapes[name]||shapes.wallet).replace(/url\\(#(body|top|edge|gold)\\)/g,(_,part)=>'url(#m3d-'+name+'-'+part+')');
+ const p=palettes[name]||palettes.wallet;let shape=shapes[name]||shapes.wallet;for(const key of ['body','top','gold','edge'])shape=shape.split('url(#'+key+')').join('url(#m3d-'+name+'-'+key+')');
  return '<svg class="m3d-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" focusable="false"><defs>'+
  '<linearGradient id="m3d-'+name+'-body" x1=".1" x2=".85" y1=".03" y2="1"><stop stop-color="'+p[0]+'"/><stop offset=".6" stop-color="'+p[1]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient>'+
  '<linearGradient id="m3d-'+name+'-top" x1="0" x2=".8" y1="0" y2="1"><stop stop-color="#fff" stop-opacity=".95"/><stop offset=".12" stop-color="'+p[0]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient>'+
