@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v31-20261110-r2/);
+ assert.match(worker,/masareefi-official-shell-v31-20261112-r3/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
