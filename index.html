@@ -2556,12 +2556,12 @@ const palettes={
  expense:['#ffafad','#e46f7d','#ffd084'],car:['#afa8ed','#736cbb','#ffda7b']
 };
 function icon(name){
- const p=palettes[name]||palettes.wallet,shape=shapes[name]||shapes.wallet;
+ const p=palettes[name]||palettes.wallet,shape=(shapes[name]||shapes.wallet).replace(/url\\(#(body|top|edge|gold)\\)/g,(_,part)=>'url(#m3d-'+name+'-'+part+')');
  return '<svg class="m3d-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" focusable="false"><defs>'+
- '<linearGradient id="body" x1=".1" x2=".85" y1=".03" y2="1"><stop stop-color="'+p[0]+'"/><stop offset=".6" stop-color="'+p[1]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient>'+
- '<linearGradient id="top" x1="0" x2=".8" y1="0" y2="1"><stop stop-color="#fff" stop-opacity=".95"/><stop offset=".12" stop-color="'+p[0]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient>'+
- '<linearGradient id="gold" x1=".1" x2=".9" y1="0" y2="1"><stop stop-color="#fff1ad"/><stop offset=".48" stop-color="'+p[2]+'"/><stop offset="1" stop-color="#e19b41"/></linearGradient>'+
- '<linearGradient id="edge"><stop stop-color="#ffffff" stop-opacity=".65"/><stop offset="1" stop-color="#42336b" stop-opacity=".52"/></linearGradient></defs>'+
+ '<linearGradient id="m3d-'+name+'-body" x1=".1" x2=".85" y1=".03" y2="1"><stop stop-color="'+p[0]+'"/><stop offset=".6" stop-color="'+p[1]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient>'+
+ '<linearGradient id="m3d-'+name+'-top" x1="0" x2=".8" y1="0" y2="1"><stop stop-color="#fff" stop-opacity=".95"/><stop offset=".12" stop-color="'+p[0]+'"/><stop offset="1" stop-color="'+p[1]+'"/></linearGradient>'+
+ '<linearGradient id="m3d-'+name+'-gold" x1=".1" x2=".9" y1="0" y2="1"><stop stop-color="#fff1ad"/><stop offset=".48" stop-color="'+p[2]+'"/><stop offset="1" stop-color="#e19b41"/></linearGradient>'+
+ '<linearGradient id="m3d-'+name+'-edge"><stop stop-color="#ffffff" stop-opacity=".65"/><stop offset="1" stop-color="#42336b" stop-opacity=".52"/></linearGradient></defs>'+
  '<ellipse cx="20" cy="37" rx="13" ry="2" fill="#443366" opacity=".13"/>'+shape+'</svg>';
 }
 function change(selector,name,slotSelector){
