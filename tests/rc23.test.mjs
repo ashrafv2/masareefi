@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 31\.3/);
+ assert.match(app,/الإصدار الرسمي 31\.4/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v31-20261112-r4/);
+ assert.match(worker,/masareefi-official-shell-v31-20261113-r5/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -388,4 +388,29 @@ test('transaction detail cards read records without writing and escape saved tex
  assert.match(node('transactionDetailsBody').innerHTML,/499.15/);
  assert.match(node('transactionDetailsBody').innerHTML,/2026-11-12/);
  node('ticketEdit').onclick();assert.equal(edited,true);
+});
+
+test('savings edits preserve records, balances and linked receivables and assets',()=>{
+ const source=app.match(/function savingsEditPlan\(state,which,changes\)\{[\s\S]*?\n\}/)[0];
+ const plan=new Function(source+';return savingsEditPlan')();
+ const base=()=>({savingAccounts:[{id:'bank',name:'بنك'},{id:'cash',name:'كاش'}],savings:[{id:'d',type:'deposit',amount:1000,account:'bank',date:'2026-11-01',note:'تسوية',adjustment:true},{id:'w',type:'withdrawal',amount:100,account:'bank',date:'2026-11-02'}],receivables:[],incomeAssets:[],transactions:[{id:'keep',amount:5}],themeColor:'#985acf'});
+ const edit=(amount,account='bank',extra={})=>({amount,account,date:'2026-11-13',note:'تعديل',...extra});
+ const state=base(),before=JSON.stringify(state);
+ let next=plan(state,'w',edit(150));assert.equal(next.savings[1].amount,150);assert.equal(JSON.stringify(state),before);assert.deepEqual(next.transactions,state.transactions);assert.equal(next.themeColor,state.themeColor);
+ assert.equal(plan(state,'d',edit(900)).savings[0].adjustment,true);
+ assert.throws(()=>plan(state,'d',edit(50)),/رصيد/);
+ assert.throws(()=>plan(state,'w',edit(100,'cash')),/رصيد/);
+ assert.throws(()=>plan(state,'w',edit(1.234)),/مبلغ/);
+ assert.throws(()=>plan(state,'w',edit(1,'bank',{date:'2026-02-30'})),/تاريخ/);
+ state.savings.push({id:'t',type:'transfer',amount:200,account:'bank',toAccount:'cash'});
+ next=plan(state,'t',edit(250,'bank',{toAccount:'cash'}));assert.equal(next.savings[2].amount,250);
+ assert.throws(()=>plan(state,'t',edit(250,'bank',{toAccount:'bank'})),/مختلف/);
+ state.savings.push({id:'c',type:'collection',amount:100,account:'bank',receivableId:'r'});state.receivables=[{id:'r',amount:500,remaining:400}];
+ next=plan(state,'c',edit(200));assert.equal(next.receivables[0].remaining,300);assert.equal(state.receivables[0].remaining,400);
+ assert.throws(()=>plan(state,'c',edit(601)),/المستحق/);
+ state.incomeAssets=[{id:'a',purchaseCost:100,purchaseDate:'2026-11-02',fundingAccount:'bank'}];state.savings[1].assetId='a';
+ next=plan(state,'w',edit(120));assert.equal(next.incomeAssets[0].purchaseCost,120);assert.equal(next.incomeAssets[0].purchaseDate,'2026-11-13');
+ delete state.savings[1].assetId;state.savings[1].incomeAssetId='a';
+ next=plan(state,'w',edit(130));assert.equal(next.savings[1].incomeAssetId,'a');assert.equal(next.incomeAssets[0].purchaseCost,100);
+ state.savings[1].amount=2000;next=plan(state,'w',edit(1900));assert.equal(next.savings[1].amount,1900);assert.throws(()=>plan(state,'w',edit(2100)),/رصيد/);
 });
