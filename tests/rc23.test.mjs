@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 31\.4/);
+ assert.match(app,/الإصدار الرسمي 31\.5/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v31-20261113-r5/);
+ assert.match(worker,/masareefi-official-shell-v31-20261113-r6/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -413,4 +413,13 @@ test('savings edits preserve records, balances and linked receivables and assets
  delete state.savings[1].assetId;state.savings[1].incomeAssetId='a';
  next=plan(state,'w',edit(130));assert.equal(next.savings[1].incomeAssetId,'a');assert.equal(next.incomeAssets[0].purchaseCost,100);
  state.savings[1].amount=2000;next=plan(state,'w',edit(1900));assert.equal(next.savings[1].amount,1900);assert.throws(()=>plan(state,'w',edit(2100)),/رصيد/);
+});
+
+test('clear savings only removes movements and preserves every other financial field',()=>{
+ const source=app.match(/function clearedSavingsSnapshot\(state\)\{[\s\S]*?\n\}/)[0];
+ const clear=new Function(source+';return clearedSavingsSnapshot')();
+ const original={savings:[{id:'x',amount:100,receivableId:'r'}],savingAccounts:[{id:'bank'}],transactions:[{id:'t'}],receivables:[{id:'r',remaining:50}],incomeAssets:[{id:'a',purchaseCost:500}],goals:[{id:'g'}],themeColor:'#985acf',extra:{preserve:true}};
+ const before=JSON.stringify(original),next=clear(original);
+ assert.deepEqual(next.savings,[]);assert.equal(JSON.stringify(original),before);
+ for(const key of Object.keys(original).filter(x=>x!=='savings'))assert.deepEqual(next[key],original[key]);
 });
