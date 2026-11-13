@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 32\.2/);
+ assert.match(app,/الإصدار الرسمي 32\.3/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v32-20261113-r3/);
+ assert.match(worker,/masareefi-official-shell-v32-20261113-r4/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -168,7 +168,7 @@ test('asset operating costs from savings only post a withdrawal and reduce asset
  const alerts=[];
  let saves=0;
  const context={data,asset,el:key=>key==='assetTxForm'?form:notice,safe:String,money:String,
-  catOptions:()=>['صيانة'],savingAccountTotal:()=>12500-data.savings.reduce((v,x)=>v+x.amount,0),
+  decorateCategorySelect(){},catOptions:()=>['صيانة'],savingAccountTotal:()=>12500-data.savings.reduce((v,x)=>v+x.amount,0),
   today:()=>form.elements.date.value,n:Number,requireAmount:v=>v>0,id:()=>String(data.savings.length),
   alert:message=>alerts.push(message),closeModal:()=>{},persist:()=>{saves++},
   openModal:(_title,body,setup)=>{assert.match(body,/الدفع من الادخار/);setup()}};
@@ -341,12 +341,15 @@ test('merchant image upload rejects unsupported and oversized input before decod
 test('category picker opens as modal above its owner and cleans up without changing other form data',()=>{
  const source=app.match(/function openCategoryPicker\(select\)\{[^]*?\n\}/)[0];
  class Node extends EventTarget{
-  constructor(){super();this.isConnected=true;this.open=false;this.dataset={}}
+  constructor(){super();this.isConnected=true;this.open=false;this.dataset={};this.value=''}
   focus(){this.focused=true}
   remove(){this.isConnected=false}
   showModal(){this.open=true;this.modal=true}
   close(){this.open=false;this.dispatchEvent(new Event('close'))}
   setAttribute(){}
+  append(){}
+  replaceChildren(){}
+  click(){this.onclick?.()}
  }
  const owner=new Node();owner.open=true;
  const trigger=new Node(),search=new Node(),dismiss=new Node(),choice=new Node();choice.dataset.categoryValue='مطاعم';
@@ -354,7 +357,7 @@ test('category picker opens as modal above its owner and cleans up without chang
  let layer,created=0,observer,changes=0;
  select.addEventListener('change',()=>changes++);
  const doc={body:{append(){}},querySelector:()=>layer?.isConnected?layer:null,createElement:tag=>{
-  assert.equal(tag,'dialog');created++;layer=new Node();layer.querySelector=s=>s.includes('search')?search:dismiss;layer.querySelectorAll=()=>[choice];return layer;
+  if(tag!=='dialog')return new Node();created++;layer=new Node();layer.querySelector=s=>s.includes('empty')?null:s.includes('navigation')?new Node():s.includes('search')?search:dismiss;layer.querySelectorAll=()=>[choice];return layer;
  }};
  const context=vm.createContext({document:doc,select,data:{transactions:[]},safe:x=>x,categoryIconSvg:()=>'',Event,MutationObserver:class{constructor(cb){this.callback=cb;observer=this}observe(){}disconnect(){this.disconnected=true}}});
  vm.runInContext(source,context);
@@ -459,4 +462,11 @@ test('removing an asset preserves financial history and financing but detaches i
  const state={incomeAssets:[{id:'a',debtId:'loan'},{id:'b'}],transactions:[{id:'t',amount:500,incomeAssetId:'a'},{id:'u',incomeAssetId:'b'}],savings:[{id:'s',assetId:'a',amount:100}],debts:[{id:'loan',remaining:80}]};
  const original=JSON.stringify(state),next=remove(state,'a');
  assert.equal(JSON.stringify(state),original);assert.equal(next.incomeAssets.length,1);assert.equal(next.transactions[0].amount,500);assert.equal('incomeAssetId' in next.transactions[0],false);assert.equal(next.transactions[1].incomeAssetId,'b');assert.equal(next.savings[0].amount,100);assert.equal('assetId' in next.savings[0],false);assert.deepEqual(next.debts,state.debts);
+});
+
+test('asset category catalogs exclude household defaults and keep vehicle costs distinct',()=>{
+ const source=app.match(/function assetCategoryOptions\(type,asset\)\{[\s\S]*?\n\}/)[0];
+ const options=new Function(source+';return assetCategoryOptions')();
+ const car=options('expense',{name:'سيارة H1'});assert.ok(car.includes('السيارة / وقود'));assert.ok(car.includes('السيارة / صيانة'));assert.ok(car.every(x=>!x.includes('بقالة')));
+ const equipment=options('expense',{name:'معدات الفحص',assetClass:'equipment'});assert.ok(equipment.includes('تشغيل المشروع / قطع غيار'));assert.ok(!equipment.includes('السيارة / وقود'));assert.ok(options('income',{}).includes('إيرادات العمل / بيع سكراب'));
 });

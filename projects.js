@@ -149,6 +149,7 @@ function fields(name,title,type='text',value='',extra=''){return `<div class="fi
 function form(title,body,submit){
  const original=JSON.stringify(data);
  openModal(title,`<form id="businessForm">${body}<p id="businessError" class="negative" role="alert"></p><div class="actions"><button type="submit" class="btn">حفظ</button><button type="button" class="btn secondary" id="businessCancel">إلغاء</button></div></form>`);
+ const category=el('businessForm').querySelector('select[name=category]');if(category){category.dataset.categoryScope='business';decorateCategorySelect(category)}
  el('businessCancel').onclick=closeModal;el('businessForm').onsubmit=e=>{e.preventDefault();try{if(JSON.stringify(data)!==original)fail('تغيرت البيانات أثناء فتح النافذة. أعد فتحها لمراجعة أحدث نسخة.');const values=Object.fromEntries(new FormData(e.currentTarget).entries());values.assetIds=new FormData(e.currentTarget).getAll('assetIds');commit(submit(values))}catch(err){el('businessError').textContent=err.name==='QuotaExceededError'?'تعذر الحفظ. لم تتغير البيانات.':err.message}};
 }
 function configureUI(key){
