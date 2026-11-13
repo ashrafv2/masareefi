@@ -334,7 +334,7 @@ body.entry-v13-open{overflow:hidden}
 .circle:not(.red) .m3d-icon{width:27px;height:27px}
 .m3d-touch{touch-action:manipulation}
 @media(prefers-reduced-motion:reduce){.m3d-icon{transition:none!important}}
-</style></head><body><div class="shell">
+</style><link rel="stylesheet" href="./projects.css?v=32"></head><body><div class="shell">
 <header class="head v12-head">
   <div class="headtop v12-top">
     <button class="iconbtn" data-go="settings" aria-label="الإعدادات"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 14 4.3l3-.1.8 2.9 2.7 1.3-1 2.9 1 2.9-2.7 1.3-.8 2.9-3-.1L12 22l-2-2.3-3 .1-.8-2.9-2.7-1.3 1-2.9-1-2.9 2.7-1.3L7 4.2l3 .1Z"/><circle cx="12" cy="12" r="3.2"/></svg></button>
@@ -379,7 +379,7 @@ body.entry-v13-open{overflow:hidden}
       </button>
     </div>
   </div>
-  <button type="button" class="asset-home-link" data-go="assets"><span aria-hidden="true">🚘</span><span><b>الأصول والمشاريع</b><small>الإيرادات ومصاريف التشغيل وصافي العائد</small></span><span aria-hidden="true">‹</span></button>
+  <button type="button" class="asset-home-link" data-go="assets"><span aria-hidden="true">🚘</span><span><b>المشاريع والأصول</b><small>الإيرادات ومصاريف التشغيل وصافي العائد</small></span><span aria-hidden="true">‹</span></button>
   <section class="card reference-overview" aria-labelledby="overviewTitle"><div class="sectionbar"><h2 id="overviewTitle">نظرة سريعة</h2><button class="subtlelink" data-go="reports">التقارير ‹</button></div><div id="homeOverview"></div></section>
   <section class="card reference-goals" aria-labelledby="homeGoalsTitle"><div class="sectionbar"><h2 id="homeGoalsTitle">أهداف الادخار 🎯</h2><button class="subtlelink" data-go="goals">عرض الكل ‹</button></div><div id="homeGoals"></div></section>
   <div class="v12-sectionbar">
@@ -414,7 +414,7 @@ body.entry-v13-open{overflow:hidden}
 <section class="page" id="p-budget"><div class="screenhead"><h2>ميزانية دورة الراتب</h2></div><div class="card"><div class="field"><label>تصنيف المصروف</label><select id="budgetCategory"></select></div><div class="field"><label>الحد للدورة (ريال)</label><input type="number" min="0.01" step="0.01" id="budgetAmount"></div><button class="btn" id="setBudget">حفظ الحد</button></div><div class="card" id="budgetList"></div></section>
 <section class="page" id="p-goals"><div class="screenhead"><h2>أهداف الادخار</h2><button class="btn secondary" id="addGoalBtn">＋ هدف</button></div><div class="card" id="goalsList"></div></section>
 <section class="page" id="p-debts"><div class="screenhead"><h2>الأقساط والديون</h2><button class="btn secondary" id="addDebtBtn">＋ التزام</button></div><div class="card" id="debtsList"></div></section>
-<section class="page" id="p-assets"><div class="screenhead"><h2>أصول ومشاريع مدرّة للدخل</h2><button class="btn secondary" id="addIncomeAsset">＋ أصل</button></div><div class="notice" style="margin-bottom:12px">سجّل السيارة أو المشروع وتكلفة اقتنائه ومصدر تمويله. اربط به الإيرادات ومصاريف التشغيل لتعرف صافي العائد واسترداد التكلفة. ثمن الاقتناء لا يدخل ضمن مصروفات المعيشة، ويُسجّل سحبًا من حساب الادخار أو التزامًا عند التمويل.</div><div class="card" id="incomeAssetsSummary"></div><div id="incomeAssetsList"></div></section>
+<section class="page" id="p-assets"><div class="screenhead"><h2>المشاريع والأصول</h2><div class="actions"><button class="btn secondary" id="addBusinessProject">＋ مشروع</button><button class="btn secondary" id="addIncomeAsset">＋ أصل</button></div></div><div class="notice" style="margin-bottom:12px">أنشئ مشروعًا بحساب مالي مستقل، واربط به السيارة أو المعدات. تتبّع الأجهزة والمبيعات والصيانة والسكراب، وافصل السيولة عن الربح والمخزون. شراء الأصل يُسجّل سحبًا من الادخار أو التزام تمويل، دون احتساب كامل ثمنه مصروف تشغيل.</div><div id="businessProjects"></div><div class="sectionbar"><h2>الأصول والمعدات</h2></div><div class="card" id="incomeAssetsSummary"></div><div id="incomeAssetsList"></div></section>
 <section class="page" id="p-reports"><div class="screenhead"><h2>التقارير والتحليل</h2></div>
 <div class="tabactions"><button id="reportSummaryTab" class="active">ملخص</button><button id="reportDetailTab">تفاصيل</button></div>
 <div id="reportSummaryArea"><div class="card"><div class="triplet" style="box-shadow:none"><div><strong id="reportExp">0</strong><small>المصروفات</small></div><div><strong id="reportInc">0</strong><small>الدخل</small></div><div><strong id="reportNet">0</strong><small>المتبقي</small></div></div><h3>المصروفات حسب التصنيف</h3><div id="reportCats"></div>
@@ -434,7 +434,7 @@ body.entry-v13-open{overflow:hidden}
  <div class="card" id="recurringList"></div>
  <div class="notice">يُسجّل الدخل المتكرر في تاريخ استحقاقه عند فتح التطبيق في ذلك اليوم أو بعده. لن تُنشأ العملية مرتين للشهر نفسه.</div>
 </section>
-<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار الرسمي 31.7 · 13 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في الإصدار 31.7؟</summary><p>الأصول والمشاريع متاحة من الشريط السفلي والرئيسية، مع أزرار تعديل وحذف للأصول وعملياتها وتحديث حركات الشراء والتمويل المرتبطة عند تعديل التكلفة.</p><p>خيار حذف كامل سجل الادخار للتجارب، مع نسخة احتياطية اختيارية وزر حذف وتأكيد نهائي قبل تصفير أرصدة الادخار، دون حذف بقية بيانات التطبيق.</p><p>تعديل حركات سجل الادخار بالضغط عليها: المبلغ والحساب والتاريخ والوصف، مع تحديث الأرصدة والمستحقات والأصول المرتبطة والتحقق قبل الحفظ.</p><p>بطاقة تفاصيل تفاعلية للعمليات مع حركة فتح وإغلاق وقائمة للتعديل والحذف، وتنسيق جديد لإضافة المصروف مع زر حفظ متاح أثناء كتابة الوصف.</p><p>تحديث الرئيسية ببطاقات متدرجة ومحفظة ثلاثية الأبعاد، وملخص مصروفات دورة الراتب وأهداف الادخار. ألوان التصميم تتبع اختيارك من الإعدادات.</p><p>إضافة قسم الأصول المدرة للدخل: تكلفة الاقتناء، مصدر التمويل، إيرادات ومصاريف التشغيل، وصافي العائد. يمكن دفع مصروف التشغيل من حساب ادخار وتسجيله ضمن الأصل وسجل الادخار.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
+<section class="page" id="p-settings"><div class="screenhead"><h2>الإعدادات</h2></div><p class="v12-version">مصاريفي 2.0 · الإصدار الرسمي 32.0 · 13 نوفمبر 2026</p><details class="notice" style="margin-bottom:12px"><summary>ما الجديد في الإصدار 32.0؟</summary><p>إضافة المشاريع بحساب مالي مستقل، وتتبع الأجهزة والمخزون والإصلاح والبيع والسكراب والمستحقات والالتزامات، مع فصل السيولة عن الربح والاستهلاك. إضافة إلغاء شراء الأصل ورد أثره للحساب الأصلي، ومراجعة سحوبات شراء قديمة غير مرتبطة.</p><p>الأصول والمشاريع متاحة من الشريط السفلي والرئيسية، مع أزرار تعديل وحذف للأصول وعملياتها وتحديث حركات الشراء والتمويل المرتبطة عند تعديل التكلفة.</p><p>خيار حذف كامل سجل الادخار للتجارب، مع نسخة احتياطية اختيارية وزر حذف وتأكيد نهائي قبل تصفير أرصدة الادخار، دون حذف بقية بيانات التطبيق.</p><p>تعديل حركات سجل الادخار بالضغط عليها: المبلغ والحساب والتاريخ والوصف، مع تحديث الأرصدة والمستحقات والأصول المرتبطة والتحقق قبل الحفظ.</p><p>بطاقة تفاصيل تفاعلية للعمليات مع حركة فتح وإغلاق وقائمة للتعديل والحذف، وتنسيق جديد لإضافة المصروف مع زر حفظ متاح أثناء كتابة الوصف.</p><p>تحديث الرئيسية ببطاقات متدرجة ومحفظة ثلاثية الأبعاد، وملخص مصروفات دورة الراتب وأهداف الادخار. ألوان التصميم تتبع اختيارك من الإعدادات.</p><p>إضافة قسم الأصول المدرة للدخل: تكلفة الاقتناء، مصدر التمويل، إيرادات ومصاريف التشغيل، وصافي العائد. يمكن دفع مصروف التشغيل من حساب ادخار وتسجيله ضمن الأصل وسجل الادخار.</p><p>رقم الإصدار أعلاه يخص النسخة المفتوحة على جهازك.</p></details><div class="notice" style="margin-bottom:12px">اختر أحد الإعدادات التالية. كل خيار يفتح شاشة أو نافذة يمكن استخدامها مباشرة.</div><div class="card settingslist"><button class="settingsitem" id="manageCategories">التصنيفات الرئيسية والفرعية <span>‹</span></button><button class="settingsitem" id="merchantLogosSettingsV17" type="button">🏷️ شعارات المتاجر والجهات <span>‹</span></button>
 <button class="settingsitem" id="themeColors">لون التطبيق <span>‹</span></button><button class="settingsitem" id="paydaySettings" type="button">موعد الراتب ودورة الميزانية <span id="paydaySettingSummary">يوم 27 · تعديل</span></button>
 <button class="settingsitem" id="smartPasteSettingsOpen" type="button">📋 لصق الرسائل البنكية الذكي <span>‹</span></button><button class="settingsitem" id="shortcutHelpV16" type="button">📩 ربط رسائل البنك باختصارات الآيفون <span>‹</span></button>
 <button class="settingsitem" data-go="incomeLedger">سجل الدخل والراتب المتكرر <span>‹</span></button><button class="settingsitem" data-go="receipts">أرشيف الفواتير <span>‹</span></button><button class="settingsitem" data-go="backup">النسخ الاحتياطي اليدوي <span>‹</span></button><button class="settingsitem" id="financeSyncSettingsV19" type="button">☁ المزامنة المالية بين الأجهزة <span>‹</span></button><div id="syncConnectionSummaryV20" class="sync-summary-v20" role="status" aria-live="polite">جارٍ فحص حالة المزامنة...</div><button class="settingsitem" data-go="budget">الميزانية <span>‹</span></button><button class="settingsitem" data-go="debts">الأقساط والديون <span>‹</span></button><button class="settingsitem" data-go="goals">الأهداف الادخارية <span>‹</span></button><button class="settingsitem" data-go="reports">التقارير <span>‹</span></button></div><div class="notice">البيانات محفوظة في هذا المتصفح. أنشئ نسخة JSON في Google Drive أو iCloud Drive يدويًا بانتظام. يمكن تفعيل المزامنة المالية المشفرة من الإعدادات؛ تعمل أثناء فتح التطبيق وبعد تسجيل الدخول.</div></section>
@@ -454,7 +454,7 @@ body.entry-v13-open{overflow:hidden}
 <button type="button" class="btn secondary" id="copyOldDataToReview">استيراد بيانات الإصدار السابق</button>
 </div><div class="card"><p>تصدير نسخة كاملة إلى السحابة يدويًا أو استرجاع نسخة محفوظة. ستتضمن النسخة الجديدة صور الفواتير وملفات PDF وتواريخ الضمان.</p><div class="actions"><button class="btn" id="shareBackup">☁ مشاركة النسخة</button><button class="btn secondary" id="downloadBackup">تنزيل JSON</button><button class="btn outline" id="exportCsv">تصدير CSV</button></div><div class="field" style="margin-top:16px"><label>استعادة نسخة JSON من الملفات / Drive / iCloud</label><input id="restoreFile" type="file" accept=".json,application/json"></div><p class="footnote">استرجاع النسخة يستبدل جميع البيانات الحالية بعد التأكيد. احفظ نسخة احتياطية قبل الاسترجاع.</p></div></section>
 </main></div>
-<nav class="bottom" aria-label="التنقل"><button class="active" data-go="home"><span>⌂</span>الرئيسية</button><button data-go="transactions"><span>⇄</span>المعاملات</button><button data-go="savings"><span>▣</span>الادخار</button><button data-go="assets"><span>🚘</span>الأصول</button><button data-go="receivables"><span>⇣</span>مستحقاتي</button><button data-go="settings"><span>⚙</span>الإعدادات</button></nav>
+<nav class="bottom" aria-label="التنقل"><button class="active" data-go="home"><span>⌂</span>الرئيسية</button><button data-go="transactions"><span>⇄</span>المعاملات</button><button data-go="savings"><span>▣</span>الادخار</button><button data-go="assets"><span>🚘</span>المشاريع</button><button data-go="receivables"><span>⇣</span>مستحقاتي</button><button data-go="settings"><span>⚙</span>الإعدادات</button></nav>
 <div id="quickEntry" class="entrybar" aria-label="الإدخال السريع"><div class="first"><button type="button" class="quick-close" id="entryClose" aria-label="إغلاق الإدخال السريع">×</button><button class="toggle active" id="quickExpense">− مصروف</button><button class="toggle" id="quickIncome">＋ دخل</button><button type="button" class="category-trigger" id="categoryPickerBtn">اختر التصنيف ▾</button><select id="quickCategory" aria-label="التصنيف" class="sr-hidden-select"></select><button class="toggle" id="quickNewCategory" aria-label="إضافة تصنيف">＋</button><button type="button" class="toggle" id="smartPasteEntryOpen" aria-label="لصق رسالة بنكية">📋 لصق</button></div><div class="second"><input id="quickAmount" inputmode="decimal" type="number" step="0.01" min="0.01" placeholder="المبلغ" aria-label="المبلغ"><input id="quickNote" placeholder="وصف العملية" aria-label="وصف العملية"><button class="btn" id="quickSave" aria-label="حفظ العملية">✓</button></div></div>
 <dialog id="entryFullV13" class="entry-v13" aria-labelledby="entryTitleV13" dir="rtl">
   <div class="entry-v13-frame">
@@ -842,6 +842,7 @@ function render(){const transactions=monthTransactions(),inc=sum(transactions,'i
  const catSums={};transactions.filter(t=>t.type==='expense').forEach(t=>catSums[t.category]=(catSums[t.category]||0)+n(t.amount));const max=Math.max(1,...Object.values(catSums));el('reportCats').innerHTML=Object.entries(catSums).sort((a,b)=>b[1]-a[1]).map(([cat,v])=>`<div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between"><b>${safe(cat)}</b><span>${money(v)}</span></div><div class="progress"><span style="width:${Math.round(v/max*100)}%"></span></div></div>`).join('')||rowEmpty('لا توجد مصروفات لهذا الشهر');
  renderExtra(transactions,inc,exp,net);
  renderIncomeAssets();
+ window.masareefiProjects?.render();
  renderReferenceDashboard(transactions);
 }
 // Read-only home summaries reuse the selected salary cycle and saved goals.
@@ -918,6 +919,13 @@ function savingsEditPlan(state,which,changes){
   if(!Number.isFinite(remaining)||remaining<0||remaining>Number(r.amount))throw Error('المبلغ الجديد يتجاوز أصل المستحق أو المتبقي منه.');
   r.remaining=remaining;
  }
+ if(row.projectDebtId!=null){
+  const debt=next.debts.find(d=>String(d.id)===String(row.projectDebtId));
+  if(!debt)throw Error('الالتزام المرتبط بالسداد غير موجود.');
+  const remaining=Math.round((Number(debt.remaining)+oldAmount-amount)*100)/100;
+  if(!Number.isFinite(remaining)||remaining<0||remaining>Number(debt.total))throw Error('المبلغ الجديد لا يتوافق مع الالتزام المرتبط.');
+  debt.remaining=remaining;
+ }
  if(row.assetId!=null){
   const asset=next.incomeAssets.find(x=>String(x.id)===String(row.assetId));
   if(!asset||asset.debtId||Number(asset.purchaseCost)!==oldAmount)throw Error('بيانات شراء الأصل المرتبط تحتاج مراجعة قبل تعديل السحب.');
@@ -936,6 +944,7 @@ function savingsEditPlan(state,which,changes){
  return next;
 }
 function editSaving(which){
+ if(window.masareefiProjects?.editMovement(which))return;
  const row=data.savings.find(x=>String(x.id)===String(which));if(!row)return;
  const original=JSON.stringify(row),source=document.activeElement;
  const labels={deposit:'إيداع',withdrawal:'سحب',transfer:'تحويل',collection:'تحصيل مستحق'};
@@ -977,7 +986,7 @@ function collect(idValue){
  });
 }
 
-function act(action,which){if(action==='editSaving'){editSaving(which);return}if(action==='editTx'){showTransactionDetails(which);return}
+function act(action,which){if(window.masareefiProjects?.routeFinanceAction(action,which))return;if(action==='editSaving'){editSaving(which);return}if(action==='editTx'){showTransactionDetails(which);return}
 else if(action==='deleteTx'){if(confirm('هل تريد حذف هذه العملية نهائيًا؟ سيُعاد حساب إجمالي الدخل والمصروفات.'))data.transactions=data.transactions.filter(x=>String(x.id)!==which);else return}else if(action==='editAccount'){manageAccounts('edit',which);return}else if(action==='collect'){collect(which);return}else if(action==='deleteReceivable'){if(!confirm('حذف الدين؟ لن تُحذف التحصيلات المسجلة في الادخار.'))return;data.receivables=data.receivables.filter(x=>String(x.id)!==which)}else if(action==='addGoalMoney'){const g=data.goals.find(x=>String(x.id)===which),value=prompt('قيمة الإضافة إلى الهدف بالريال');if(value===null||!requireAmount(value))return;g.current=Math.min(n(g.target),n(g.current)+Number(value))}else if(action==='deleteGoal'){if(!confirm('حذف الهدف؟'))return;data.goals=data.goals.filter(x=>String(x.id)!==which)}else if(action==='payDebt'){const d=data.debts.find(x=>String(x.id)===which),value=prompt('قيمة السداد بالريال');if(value===null||!requireAmount(value)||Number(value)>n(d.remaining)){alert('مبلغ غير صالح');return}d.remaining=Math.round((n(d.remaining)-Number(value))*100)/100}else if(action==='deleteDebt'){if(!confirm('هل تريد حذف هذا الدين أو الالتزام نهائيًا؟ لن تُحذف المصروفات المسجلة سابقًا.'))return;data.debts=data.debts.filter(x=>String(x.id)!==which)}else if(action==='deleteBudget'){delete data.budgets[which]}persist()}
 
 const categoryEnhancementsV7={"expense":{"الطعام":["فطور","غداء","عشاء","كوفي شوب","حلويات","سحور","مخبز","وجبات سريعة"],"المنزل":["إيجار","كهرباء","ماء","إنترنت المنزل","غاز","أثاث","صيانة المنزل","مواد تنظيف"],"السيارة":["بنزين","غسيل السيارة","مواقف","مخالفات","تأمين السيارة","قطع غيار"],"شخصي":["عناية شخصية","حلاقة","ملابس","عطور","اشتراك نادي"],"الصحة":["صيدلية","عيادة","تحاليل","أسنان","تأمين طبي"],"التعليم":["مدارس","مستلزمات مدرسية","دورات","كتب","جامعات"],"التسوق":["مشتريات منزلية","ملابس","عطور","أحذية","هدايا","إلكترونيات"],"الترفيه":["سفر","نزهة","سينما","ألعاب","رحلات","فعاليات"],"الأبناء":["مصروف الأبناء","مدرسة","حضانة","ملابس الأطفال","ألعاب الأطفال","مستلزمات الأطفال"],"مناسبات":["أعياد","عزائم","زواج","هدايا مناسبات","حفلات"],"الاشتراكات":["جوال","إنترنت","تطبيقات","منصات ترفيه","نادي رياضي"],"خيري":["صدقة","زكاة","تبرع","وقف"],"أجهزة":["جوال","حاسوب","أجهزة منزلية","صيانة أجهزة"],"أقساط وديون":["قسط سيارة","سداد قرض","بطاقة ائتمانية","أقساط مشتريات"],"أخرى":["رسوم حكومية","مصروفات متنوعة"]},"income":{"الراتب":["راتب أساسي","بدلات","حوافز"],"العمل الإضافي":["عمل حر","مشروع جانبي","مكافأة","عمولة"],"الهدايا":["هدية مالية","استرداد مبلغ"],"استثمار":["أرباح استثمار","عوائد"],"أخرى":["بيع غرض","دخل متنوع"]}};
@@ -1511,6 +1520,7 @@ function incomeAssetTotals(asset,transactions,period){
 function assetTransactionDialog(asset,type){
  if(!data.incomeAssets.some(x=>String(x.id)===String(asset.id))){alert('تعذر العثور على الأصل');return}
  if(asset.active===false){alert('أعد تفعيل الأصل قبل تسجيل عمليات جديدة');return}
+ if(asset.projectId&&data.incomeAssets.some(p=>p.kind==='project'&&String(p.id)===String(asset.projectId))&&window.masareefiProjects){window.masareefiProjects.openAssetTransaction(asset,type);return}
  const options=catOptions(type).map(c=>'<option value="'+safe(c)+'">'+safe(c)+'</option>').join('');
  const accounts=type==='expense'?data.savingAccounts.map(account=>
   '<option value="'+safe(account.id)+'">الدفع من الادخار: '+safe(account.name)+' · '+money(savingAccountTotal(account.id))+'</option>'
@@ -1552,13 +1562,13 @@ function assetTransactionDialog(asset,type){
 }
 function assetLedgerRows(transactions,savings){
  const operatingWithdrawals=savings
-  .filter(row=>row.type==='withdrawal'&&row.incomeAssetId!=null)
-  .map(row=>({...row,type:'expense',savingsAccount:row.account||'bank'}));
+  .filter(row=>['withdrawal','deposit'].includes(row.type)&&row.incomeAssetId!=null)
+  .map(row=>({...row,type:row.type==='deposit'?'income':'expense',savingsAccount:row.account||'bank'}));
  return [...transactions,...operatingWithdrawals];
 }
 function renderAssetLedgerRow(row){
  const source=row.savingsAccount?'savings':'transactions';
- const content=row.savingsAccount?'<div class="txrow"><div class="rowmain"><b>'+safe(row.note||row.category)+'</b><small>'+safe([row.category,row.date,'ادخار: '+accountLabel(row.savingsAccount)].join(' · '))+'</small></div><strong class="value negative">−'+money(row.amount)+'</strong></div>':txRows([row]);
+ const content=row.savingsAccount?'<div class="txrow"><div class="rowmain"><b>'+safe(row.note||row.category)+'</b><small>'+safe([row.category,row.date,'ادخار: '+accountLabel(row.savingsAccount)].join(' · '))+'</small></div><strong class="value '+(row.type==='income'?'positive':'negative')+'">'+(row.type==='income'?'+':'−')+money(row.amount)+'</strong></div>':txRows([row]);
  return '<div class="asset-operation">'+content+'<div class="actions"><button type="button" class="btn secondary" data-asset-entry="edit" data-source="'+source+'" data-id="'+safe(row.id)+'">تعديل</button><button type="button" class="btn danger" data-asset-entry="delete" data-source="'+source+'" data-id="'+safe(row.id)+'">حذف العملية</button></div></div>';
 }
 function incomeAssetEditPlan(state,which,changes){
@@ -1569,6 +1579,7 @@ function incomeAssetEditPlan(state,which,changes){
  if(!name||name.length>80||!Number.isFinite(cost)||cost<=0||cost>99999999999||Math.abs(cost*100-Math.round(cost*100))>0.00001)throw Error('أدخل اسمًا وتكلفة صحيحة بخانتين عشريتين كحد أقصى.');
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+'T12:00:00Z'))||new Date(date+'T12:00:00Z').toISOString().slice(0,10)!==date)throw Error('اختر تاريخ اقتناء صحيحًا.');
  if(asset.debtId!=null){
+  if(state.incomeAssets.some(a=>String(a.id)!==String(which)&&String(a.debtId)===String(asset.debtId)))throw Error('التمويل مرتبط بأصل آخر. راجع الالتزام قبل تعديل الأصل.');
   const debt=next.debts.find(d=>String(d.id)===String(asset.debtId));
   if(!debt||Number(debt.total)!==Number(asset.purchaseCost)||!Number.isFinite(Number(debt.remaining))||Number(debt.remaining)<0||Number(debt.remaining)>Number(debt.total))throw Error('بيانات التمويل المرتبط تحتاج مراجعة قبل تعديل الأصل.');
   const paid=Math.round((Number(debt.total)-Number(debt.remaining))*100)/100,monthly=Number(changes.monthly);
@@ -1612,15 +1623,44 @@ function editIncomeAsset(which){
   }catch(err){el('assetEditError').textContent=err.name==='QuotaExceededError'?'تعذر الحفظ لعدم توفر مساحة. لم تتغير البيانات.':err.message}
  };
 }
+function incomeAssetRefundPlan(state,which){
+ const asset=state.incomeAssets.find(a=>String(a.id)===String(which));
+ if(!asset)throw Error('تعذر العثور على الأصل.');
+ const purchases=state.savings.filter(x=>String(x.assetId)===String(which));
+ let next=JSON.parse(JSON.stringify(state));
+ if(asset.debtId!=null){
+  if(state.incomeAssets.some(a=>String(a.id)!==String(which)&&String(a.debtId)===String(asset.debtId)))throw Error('التمويل مرتبط بأصل آخر. راجع الالتزام قبل إلغاء الشراء.');
+  const debt=next.debts.find(d=>String(d.id)===String(asset.debtId));
+  if(purchases.length||!debt||Number(debt.remaining)!==Number(debt.total)||Number(debt.total)!==Number(asset.purchaseCost))throw Error('للتمويل سداد أو بيانات غير متسقة. لا يمكن إلغاء الشراء تلقائيًا؛ راجع التمويل أولًا.');
+  next.debts=next.debts.filter(d=>String(d.id)!==String(asset.debtId));
+ }else{
+  if(purchases.length!==1)throw Error('لم أجد حركة شراء واحدة مرتبطة بالأصل. لا يمكن رد مبلغ تخميني؛ راجع نسخة احتياطية أو سجل الادخار.');
+  const purchase=purchases[0];
+  if(state.savings.filter(x=>String(x.id)===String(purchase.id)).length!==1)throw Error('معرّف حركة الشراء مكرر. راجع السجل قبل إلغاء الشراء.');
+  if(purchase.type!=='withdrawal'||Number(purchase.amount)!==Number(asset.purchaseCost)||!next.savingAccounts.some(a=>a.id===(purchase.account||'bank')))throw Error('حركة الشراء غير متسقة مع تكلفة الأصل أو حسابه. راجع السجل أولًا.');
+  next.savings=next.savings.filter(x=>String(x.id)!==String(purchase.id));
+ }
+ return incomeAssetRemovalPlan(next,which);
+}
 function deleteIncomeAsset(which){
  const asset=data.incomeAssets.find(a=>String(a.id)===String(which));if(!asset)return;
- if(!confirm('حذف تعريف «'+asset.name+'»؟ ستبقى الإيرادات والمصروفات وحركات الادخار والتمويل في سجلاتها، دون رد ثمن الشراء. لحذف عملية مالية استخدم زر حذف العملية.'))return;
- try{saveAssetCandidate(incomeAssetRemovalPlan(data,which))}catch(err){alert('تعذر حفظ الحذف. لم تتغير البيانات.')}
+ const original=JSON.stringify(data),financed=asset.debtId!=null;
+ openModal('حذف الأصل — '+safe(asset.name),`<p class="notice">اختر أثر الحذف. تبقى إيرادات التشغيل ومصروفاته في سجلاتها، ويمكن حذف كل عملية من زرها الخاص.</p><div class="field"><label for="assetDeleteMode">طريقة الحذف</label><select id="assetDeleteMode"><option value="refund">${financed?'إلغاء الشراء وإلغاء التمويل غير المسدد':'إلغاء الشراء وإرجاع ثمنه إلى الادخار'}</option><option value="definition">حذف تعريف الأصل فقط وإبقاء سحب الشراء والتمويل</option></select></div><p class="footnote">إرجاع الثمن يزيل سحب الشراء الأصلي من الحساب الذي دُفع منه، دون إنشاء إيداع إضافي. إلغاء التمويل متاح فقط إذا لم يُسدد منه شيء. إذا كانت السيارة بيعت فعلًا، سجّل البيع بدل إلغاء شرائها.</p><p id="assetDeleteError" class="negative" role="alert"></p><div class="actions"><button type="button" class="btn danger" id="assetDeleteConfirm">تأكيد الحذف</button><button type="button" class="btn secondary" id="assetDeleteCancel">إلغاء</button></div>`);
+ el('assetDeleteCancel').onclick=closeModal;
+ el('assetDeleteConfirm').onclick=()=>{
+  try{
+   if(JSON.stringify(data)!==original)throw Error('تغيرت البيانات. أعد فتح النافذة قبل الحذف.');
+   const refund=el('assetDeleteMode').value==='refund';
+   const next=refund?incomeAssetRefundPlan(data,which):incomeAssetRemovalPlan(data,which);
+   if(!confirm(refund?'تأكيد إلغاء شراء الأصل وحذفه مع رد أثر الشراء أو إلغاء التمويل غير المسدد؟':'حذف التعريف فقط دون إرجاع ثمن الشراء؟'))return;
+   saveAssetCandidate(next);
+  }catch(err){el('assetDeleteError').textContent=err.name==='QuotaExceededError'?'تعذر الحفظ. لم تتغير البيانات.':err.message}
+ };
 }
 function assetEntryAction(source,action,which){
  if(!['transactions','savings'].includes(source))return;
  const rows=data[source].filter(x=>String(x.id)===String(which));if(rows.length!==1)return;
- const row=rows[0];if(row.incomeAssetId==null||(source==='savings'&&row.type!=='withdrawal'))return;
+ const row=rows[0];if(window.masareefiProjects?.assetEvent(row,action))return;if(row.incomeAssetId==null||(source==='savings'&&row.type!=='withdrawal'))return;
  if(action==='edit'){if(source==='savings')editSaving(which);else editTransaction(which);return}
  if(action!=='delete')return;
  const message=source==='savings'?'حذف مصروف التشغيل ورد مبلغه إلى حساب الادخار؟':'حذف هذه العملية من سجل المعاملات وعمليات الأصل وإعادة حساب العائد؟';
@@ -1629,14 +1669,15 @@ function assetEntryAction(source,action,which){
  try{saveAssetCandidate(next)}catch(err){alert('تعذر حفظ الحذف. لم تتغير البيانات.')}
 }
 function createIncomeAsset(){
+ const projectOptions=(data.incomeAssets||[]).filter(a=>a.kind==='project').map(a=>'<option value="'+safe(a.id)+'">'+safe(a.name)+'</option>').join('');
  const accounts=data.savingAccounts.map(a=>'<option value="'+safe(a.id)+'">'+safe(a.name)+' · '+money(savingAccountTotal(a.id))+'</option>').join('');
  openModal('إضافة أصل مدر للدخل',
-  '<form id="incomeAssetForm"><div class="field"><label>اسم الأصل أو المشروع</label><input name="name" required maxlength="80" placeholder="مثال: سيارة للتأجير"></div><div class="field"><label>تكلفة الاقتناء (ريال)</label><input name="cost" type="number" min="0.01" step="0.01" required></div><div class="field"><label>تاريخ الاقتناء</label><input name="date" type="date" required value="'+today()+'"></div><div class="field"><label>مصدر تمويل الشراء</label><select name="funding">'+accounts+'<option value="loan">تمويل أو دين جديد</option></select></div><div class="field" id="assetInstallmentField" hidden><label>القسط الشهري للتمويل (اختياري)</label><input name="monthly" type="number" min="0" step="0.01" value="0"></div><p class="notice">إذا اخترت حسابًا، يُسجّل سحب تكلفة الشراء في الادخار. وإذا اخترت التمويل، يُسجّل التزام بالمتبقي نفسه. تكلفة الاقتناء لا تُسجل مصروفًا معيشيًا.</p><div class="actions"><button class="btn" type="submit">حفظ الأصل</button></div></form>',
-  ()=>{const form=el('incomeAssetForm');form.elements.funding.onchange=()=>{el('assetInstallmentField').hidden=form.elements.funding.value!=='loan'};form.onsubmit=e=>{e.preventDefault();const cost=Number(form.elements.cost.value),date=form.elements.date.value,funding=form.elements.funding.value,name=form.elements.name.value.trim();if(!name||!requireAmount(cost)){alert('أدخل اسم الأصل وتكلفة اقتناء صحيحة');return}if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){alert('اختر تاريخ اقتناء صحيحًا');return}if(funding!=='loan'&&savingAccountTotal(funding)+.0001<cost){alert('رصيد الحساب المختار أقل من تكلفة الشراء. اختر تمويلًا أو سجّل المبلغ بعد التأكد من مصدره.');return}const asset={id:id(),name,purchaseCost:cost,purchaseDate:date,fundingAccount:funding==='loan'?'':funding,active:true};if(funding==='loan'){const monthly=Number(form.elements.monthly.value)||0,debtId=id();asset.debtId=debtId;data.debts.push({id:debtId,name:'تمويل '+name,total:cost,remaining:cost,monthly,due:''})}else data.savings.push({id:id(),type:'withdrawal',account:funding,amount:cost,date,note:'شراء أصل مدر للدخل: '+name,assetId:asset.id});data.incomeAssets.push(asset);closeModal();persist()}}
+  '<form id="incomeAssetForm"><div class="field"><label>المشروع التابع له</label><select name="projectId"><option value="">بدون مشروع</option>'+projectOptions+'</select></div><div class="field"><label>اسم الأصل أو المشروع</label><input name="name" required maxlength="80" placeholder="مثال: سيارة للتأجير"></div><div class="field"><label>تكلفة الاقتناء (ريال)</label><input name="cost" type="number" min="0.01" step="0.01" required></div><div class="field"><label>تاريخ الاقتناء</label><input name="date" type="date" required value="'+today()+'"></div><div class="field"><label>مصدر تمويل الشراء</label><select name="funding">'+accounts+'<option value="loan">تمويل أو دين جديد</option></select></div><div class="field" id="assetInstallmentField" hidden><label>القسط الشهري للتمويل (اختياري)</label><input name="monthly" type="number" min="0" step="0.01" value="0"></div><p class="notice">إذا اخترت حسابًا، يُسجّل سحب تكلفة الشراء في الادخار. وإذا اخترت التمويل، يُسجّل التزام بالمتبقي نفسه. تكلفة الاقتناء لا تُسجل مصروفًا معيشيًا.</p><div class="actions"><button class="btn" type="submit">حفظ الأصل</button></div></form>',
+  ()=>{const form=el('incomeAssetForm');form.elements.funding.onchange=()=>{el('assetInstallmentField').hidden=form.elements.funding.value!=='loan'};form.onsubmit=e=>{e.preventDefault();const cost=Number(form.elements.cost.value),date=form.elements.date.value,funding=form.elements.funding.value,name=form.elements.name.value.trim();if(!name||!requireAmount(cost)){alert('أدخل اسم الأصل وتكلفة اقتناء صحيحة');return}if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){alert('اختر تاريخ اقتناء صحيحًا');return}if(funding!=='loan'&&savingAccountTotal(funding)+.0001<cost){alert('رصيد الحساب المختار أقل من تكلفة الشراء. اختر تمويلًا أو سجّل المبلغ بعد التأكد من مصدره.');return}const asset={id:id(),name,projectId:form.elements.projectId?.value||'',purchaseCost:cost,purchaseDate:date,fundingAccount:funding==='loan'?'':funding,active:true};if(funding==='loan'){const monthly=Number(form.elements.monthly.value)||0,debtId=id();asset.debtId=debtId;data.debts.push({id:debtId,name:'تمويل '+name,total:cost,remaining:cost,monthly,due:'',projectId:asset.projectId||''})}else data.savings.push({id:id(),type:'withdrawal',account:funding,amount:cost,date,note:'شراء أصل مدر للدخل: '+name,assetId:asset.id});data.incomeAssets.push(asset);closeModal();persist()}}
  );
 }
 function renderIncomeAssets(){
- const assets=Array.isArray(data.incomeAssets)?data.incomeAssets:[];
+ const assets=Array.isArray(data.incomeAssets)?data.incomeAssets.filter(a=>a.kind!=='project'):[];
  const period=paydayCycle.forEndMonth(month,data.paydayDay);
  const ledger=assetLedgerRows(data.transactions,data.savings);
  const totals=assets.map(a=>incomeAssetTotals(a,ledger,period));
@@ -2892,4 +2933,4 @@ button.saving-edit-row:last-child{border-bottom:0}button.saving-edit-row:hover{b
 </style><style id="assets-access-editing">
 .asset-home-link{display:flex;align-items:center;gap:12px;width:100%;padding:14px;margin:0 0 16px;border:1px solid var(--theme-line);border-radius:22px;background:var(--theme-soft-2);color:var(--accent-dark);text-align:right}.asset-home-link>span:nth-child(2){flex:1}.asset-home-link b,.asset-home-link small{display:block}.asset-home-link small{font-size:11px;color:var(--muted)}.asset-home-link>span:first-child{font-size:27px}.asset-operation{padding:8px 0 14px;border-bottom:1px solid var(--line)}.asset-operation:last-child{border:0}.asset-operation>.actions{margin-top:6px}.asset-operation>.actions button{flex:1}
 #p-assets .screenhead h2{font-size:19px;min-width:0}#p-assets .screenhead button{flex:none}#p-assets .card h3{overflow-wrap:anywhere}.bottom button{font-size:10px}.bottom button>span.m3d-slot{width:32px}.bottom button .m3d-icon{width:29px;height:29px}
-</style></body></html>
+</style><script src="./projects.js?v=32" defer></script></body></html>

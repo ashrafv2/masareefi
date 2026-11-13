@@ -9,6 +9,8 @@ on:
       - 'device-vault.js'
       - 'sw.js'
       - 'firestore.rules'
+      - 'projects.js'
+      - 'projects.css'
       - 'tests/**'
       - '.github/workflows/rc23-tests.yml'
   pull_request:
@@ -18,6 +20,8 @@ on:
       - 'device-vault.js'
       - 'sw.js'
       - 'firestore.rules'
+      - 'projects.js'
+      - 'projects.css'
       - 'tests/**'
 
 permissions:
@@ -35,4 +39,4 @@ jobs:
         with:
           node-version: '22'
       - name: Run source and quarantine regression checks
-        run: node --test tests/rc23.test.mjs
+        run: node --test tests/*.test.mjs
