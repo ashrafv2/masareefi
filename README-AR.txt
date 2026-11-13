@@ -1,4 +1,4 @@
-مصاريفي 2.0 — الإصدار الرسمي 31 (10 نوفمبر 2026)
+مصاريفي 2.0 — الإصدار الرسمي 32.0 (13 نوفمبر 2026)
 
 لأي مطور أو حساب ChatGPT جديد: ابدأ بقراءة دليل التطوير الدائم DEVELOPMENT_GUIDE_AR.md
 https://github.com/ashrafv2/masareefi/blob/main/DEVELOPMENT_GUIDE_AR.md
@@ -21,7 +21,9 @@ https://github.com/ashrafv2/masareefi/blob/main/DEVELOPMENT_GUIDE_AR.md
 
 النسخة الرسمية السابقة محفوظة على الفرع backup-before-rc23-20261030 ويمكن الرجوع إلى ملفاتها عند الحاجة. هذه نسخة من الشيفرة فقط، لا تشمل بيانات الأجهزة.
 
-تشغيل اختبارات الانحدار: .github/workflows/rc23-tests.yml
+تشغيل اختبارات الانحدار: node --test tests/*.test.mjs
+المشاريع والأجهزة والسيولة والأرباح وإلغاء شراء الأصل: RELEASE_V32_2026-11-13.md
+GitHub Actions: .github/workflows/rc23-tests.yml
 تفاصيل Firebase: FIREBASE_SYNC_SETUP_AR.md
 الاختصارات: SHORTCUTS_IOS_AR.md
 دورة الراتب وملاحظات الإصدار: RELEASE_V31_2026-11-10.md
