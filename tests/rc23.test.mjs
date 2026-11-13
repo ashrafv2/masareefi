@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 31\.5/);
+ assert.match(app,/الإصدار الرسمي 31\.6/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v31-20261113-r6/);
+ assert.match(worker,/masareefi-official-shell-v31-20261113-r7/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -422,4 +422,19 @@ test('clear savings only removes movements and preserves every other financial f
  const before=JSON.stringify(original),next=clear(original);
  assert.deepEqual(next.savings,[]);assert.equal(JSON.stringify(original),before);
  for(const key of Object.keys(original).filter(x=>x!=='savings'))assert.deepEqual(next[key],original[key]);
+});
+
+test('clear savings works without downloading, requires final consent, and survives storage failure',()=>{
+ const source=app.match(/function clearSavingsHistory\(\)\{[\s\S]*?\n\}/)[0];
+ const nodes=new Map(),node=id=>{if(!nodes.has(id))nodes.set(id,{textContent:'',onclick:null});return nodes.get(id)};
+ const initial={savings:[{id:'d',amount:100}],savingAccounts:[{id:'bank'}],transactions:[{id:'keep'}]};
+ let consent=false,fail=false,closed=false,saved=null;
+ const context={data:structuredClone(initial),KEY:'test-only',el:node,openModal(){},
+ confirm(){return consent},clearedSavingsSnapshot:state=>({...state,savings:[]}),
+ localStorage:{setItem(key,value){if(fail)throw Error('full');saved=JSON.parse(value)}},
+ closeModal(){closed=true},render(){},window:{},download(){throw Error('download unavailable')}};
+ vm.createContext(context);vm.runInContext(source+';clearSavingsHistory()',context);
+ node('clearSavingsExecute').onclick();assert.deepEqual(context.data,initial);assert.equal(closed,false);assert.equal(saved,null);
+ consent=true;fail=true;node('clearSavingsExecute').onclick();assert.deepEqual(context.data,initial);assert.equal(saved,null);assert.match(node('clearSavingsError').textContent,/تعذر/);
+ fail=false;node('clearSavingsExecute').onclick();assert.equal(context.data.savings.length,0);assert.deepEqual(saved.transactions,initial.transactions);assert.equal(closed,true);
 });
