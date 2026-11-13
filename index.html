@@ -1041,6 +1041,7 @@ function openCategoryPicker(select){
  const values=[...select.options].map(o=>o.value).filter(Boolean),selected=select.value;
  const counts=new Map(values.map(v=>[v,0]));
  data.transactions.filter(t=>business?!!(t.incomeAssetId||t.projectId):!(t.incomeAssetId||t.projectId)).forEach(t=>{if(counts.has(t.category))counts.set(t.category,counts.get(t.category)+1)});
+ if(business)for(const p of data.incomeAssets||[])if(p.kind==='project')for(const e of p.events||[])if(e.source!=='transactions'&&counts.has(e.category))counts.set(e.category,counts.get(e.category)+1);
  const ordered=[...values].sort((a,b)=>(counts.get(b)-counts.get(a))||a.localeCompare(b,'ar'));
  const layer=document.createElement('dialog');layer.className='category-picker-layer';
  layer.setAttribute('aria-label','اختيار التصنيف');layer.dir='rtl';
