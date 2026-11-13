@@ -73,7 +73,7 @@ test('payday defaults to day 27 and allows settings from 1 to 31',()=>{
  assert.match(app,/paydayDay:27/);
  assert.match(app,/id="paydaySettings"/);
  assert.match(app,/id="paydayDaySelect"/);
- assert.match(app,/الإصدار الرسمي 31\.6/);
+ assert.match(app,/الإصدار الرسمي 31\.7/);
  assert.match(app,/d\.paydayDay<1\|\|d\.paydayDay>31/);
 });
 test('official build keeps financial key, isolated sync credentials and user-specific Firestore',()=>{
@@ -107,7 +107,7 @@ test('automatic reconnect is opt-in; the vault does not persist plaintext passwo
  assert.match(cloud,/syncAutoV22/);
 });
 test('PWA cache is refreshed and both sync scripts stay available',()=>{
- assert.match(worker,/masareefi-official-shell-v31-20261113-r7/);
+ assert.match(worker,/masareefi-official-shell-v31-20261113-r8/);
  assert.match(worker,/'\.\/device-vault\.js','\.\/cloud-sync\.js'/);
  assert.match(app,/cloud-sync\.js\?v=23/);
 });
@@ -437,4 +437,26 @@ test('clear savings works without downloading, requires final consent, and survi
  node('clearSavingsExecute').onclick();assert.deepEqual(context.data,initial);assert.equal(closed,false);assert.equal(saved,null);
  consent=true;fail=true;node('clearSavingsExecute').onclick();assert.deepEqual(context.data,initial);assert.equal(saved,null);assert.match(node('clearSavingsError').textContent,/تعذر/);
  fail=false;node('clearSavingsExecute').onclick();assert.equal(context.data.savings.length,0);assert.deepEqual(saved.transactions,initial.transactions);assert.equal(closed,true);
+});
+
+test('asset edits update purchase withdrawals or financing while preserving paid amounts',()=>{
+ const savings=app.match(/function savingsEditPlan\(state,which,changes\)\{[\s\S]*?\n\}/)[0];
+ const source=app.match(/function incomeAssetEditPlan\(state,which,changes\)\{[\s\S]*?\n\}/)[0];
+ const plan=new Function(savings+'\n'+source+';return incomeAssetEditPlan')();
+ const state={incomeAssets:[{id:'a',name:'Car',purchaseCost:200,purchaseDate:'2026-11-01',fundingAccount:'bank'}],savingAccounts:[{id:'bank',name:'Bank'}],savings:[{id:'d',type:'deposit',account:'bank',amount:1000},{id:'p',type:'withdrawal',account:'bank',amount:200,assetId:'a'}],transactions:[],debts:[]};
+ const original=JSON.stringify(state),changes={name:'New car',cost:300,date:'2026-11-13'};
+ let next=plan(state,'a',changes);assert.equal(next.savings[1].amount,300);assert.equal(next.incomeAssets[0].purchaseCost,300);assert.equal(JSON.stringify(state),original);
+ assert.throws(()=>plan(state,'a',{...changes,cost:1200}),/رصيد/);
+ state.savings=[];next=plan(state,'a',changes);assert.equal(next.savings.length,0);assert.equal(next.incomeAssets[0].purchaseCost,300);
+ state.incomeAssets[0].debtId='loan';state.debts=[{id:'loan',total:200,remaining:120,monthly:20}];
+ next=plan(state,'a',{...changes,monthly:30});assert.equal(next.debts[0].total,300);assert.equal(next.debts[0].remaining,220);assert.equal(next.debts[0].monthly,30);
+ assert.throws(()=>plan(state,'a',{...changes,cost:70,monthly:10}),/المسدد/);
+ assert.throws(()=>plan(state,'a',{...changes,date:'2026-02-30',monthly:10}),/تاريخ/);
+});
+test('removing an asset preserves financial history and financing but detaches its grouping',()=>{
+ const source=app.match(/function incomeAssetRemovalPlan\(state,which\)\{[\s\S]*?\n\}/)[0];
+ const remove=new Function(source+';return incomeAssetRemovalPlan')();
+ const state={incomeAssets:[{id:'a',debtId:'loan'},{id:'b'}],transactions:[{id:'t',amount:500,incomeAssetId:'a'},{id:'u',incomeAssetId:'b'}],savings:[{id:'s',assetId:'a',amount:100}],debts:[{id:'loan',remaining:80}]};
+ const original=JSON.stringify(state),next=remove(state,'a');
+ assert.equal(JSON.stringify(state),original);assert.equal(next.incomeAssets.length,1);assert.equal(next.transactions[0].amount,500);assert.equal('incomeAssetId' in next.transactions[0],false);assert.equal(next.transactions[1].incomeAssetId,'b');assert.equal(next.savings[0].amount,100);assert.equal('assetId' in next.savings[0],false);assert.deepEqual(next.debts,state.debts);
 });
